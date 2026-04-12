@@ -9,7 +9,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { GraduationCap, Presentation } from "lucide-react"
+import {
+  GraduationCap,
+  LayoutDashboard,
+  LogOut,
+  Presentation,
+} from "lucide-react"
 
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuthStore()
@@ -84,16 +89,23 @@ export default function Navbar() {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem className="cursor-pointer text-sm" asChild>
                     <Link to="/dashboard">
-                      <p>Dashboard</p>
+                      <div className="flex items-center gap-1">
+                        <LayoutDashboard />
+                        <p>Dashboard</p>
+                      </div>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
+                    variant="destructive"
                     asChild
                     onClick={handleLogout}
                     className="cursor-pointer text-sm"
                   >
-                    <p>Log out</p>
+                    <div className="flex items-center gap-1">
+                      <LogOut />
+                      <p>Log out</p>
+                    </div>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

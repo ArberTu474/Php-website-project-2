@@ -37,12 +37,10 @@ export default function CoursesPage() {
 
       {/* Empty state */}
       {!isLoading && !isError && courses?.length === 0 && (
-        <div className="mt-12 flex flex-col items-center">
+        <div className="mt-12 flex flex-col items-center text-muted-foreground">
           <Ghost size="64" className="mb-2 stroke-muted-foreground" />
           <h3 className="text-xl">No courses yet</h3>
-          <p className="text-muted-foreground">
-            Check back soon — teachers are creating content.
-          </p>
+          <p>Check back soon — teachers are creating content.</p>
         </div>
       )}
 

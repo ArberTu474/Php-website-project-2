@@ -3,14 +3,12 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import type { Course } from "@/types"
 import { BookMarked, BookOpen, Star } from "lucide-react"
-import { Button } from "../ui/button"
 
 interface Props {
   course: Course
 }
 
 export default function CourseCard({ course }: Props) {
-  console.log(course)
   return (
     <Link to={`/courses/${course.slug}`}>
       <Card className="flex h-full cursor-pointer flex-col gap-0 overflow-hidden bg-card p-0 shadow-sm hover:shadow-md">
@@ -20,7 +18,7 @@ export default function CourseCard({ course }: Props) {
             <img
               src={course.thumbnail_url}
               alt={course.title}
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              className="h-full w-full object-cover"
               loading="lazy"
             />
           ) : (
