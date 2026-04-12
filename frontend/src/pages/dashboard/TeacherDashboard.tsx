@@ -1,12 +1,9 @@
 import { useState } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { Link } from "react-router-dom"
 import { toast } from "sonner"
 import { useAuthStore } from "@/store/authStore"
 import { teacherApi } from "@/lib/teacher"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
 import {
   Dialog,
   DialogContent,
@@ -16,6 +13,9 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { FilePen, Plus } from "lucide-react"
+import { Skeleton } from "@/components/ui/skeleton"
+import TeacherCourseCard from "@/components/courses/TeacherCourseCard"
 
 export default function TeacherDashboard() {
   const { user } = useAuthStore()
@@ -56,182 +56,63 @@ export default function TeacherDashboard() {
   })
 
   return (
-    <div
-      style={{
-        maxWidth: "var(--content-wide, 1200px)",
-        margin: "0 auto",
-        padding: "var(--space-12) var(--space-6)",
-      }}
-    >
+    <div className="container mx-auto my-0 px-6 py-3">
       {/* Header */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: "var(--space-10)",
-          flexWrap: "wrap",
-          gap: "var(--space-4)",
-        }}
-      >
+      <div className="flex flex-wrap items-end justify-between gap-2 py-6">
         <div>
-          <h1 style={{ fontSize: "var(--text-xl)", fontWeight: 700 }}>
-            Your Courses
-          </h1>
-          <p
-            style={{
-              color: "var(--color-text-muted)",
-              marginTop: "var(--space-1)",
-            }}
-          >
+          <h1 className="text-3xl font-bold">Your Courses</h1>
+          <p className="text-base text-muted-foreground">
             Welcome back, {user?.first_name}
           </p>
         </div>
-        <Button onClick={() => setShowCreate(true)}>+ New course</Button>
-      </div>
-
-      {/* Loading */}
-      {isLoading && (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "var(--space-4)",
-          }}
+        <Button
+          className="cursor-pointer"
+          size={"lg"}
+          asChild
+          onClick={() => setShowCreate(true)}
         >
-          {Array.from({ length: 3 }).map((_, i) => (
-            <div
-              key={i}
-              style={{
-                height: 100,
-                borderRadius: "var(--radius-lg)",
-                background: "var(--color-surface-offset)",
-              }}
-              className="animate-pulse"
-            />
-          ))}
-        </div>
-      )}
+          <div className="flex items-center gap-2">
+            <Plus />
+            <p>New course</p>
+          </div>
+        </Button>
+      </div>
 
       {/* Empty state */}
       {!isLoading && courses?.length === 0 && (
-        <div
-          style={{
-            textAlign: "center",
-            padding: "var(--space-16)",
-            color: "var(--color-text-muted)",
-          }}
-        >
-          <p style={{ fontSize: "2.5rem", marginBottom: "var(--space-4)" }}>
-            📝
-          </p>
-          <h3
-            style={{
-              color: "var(--color-text)",
-              marginBottom: "var(--space-2)",
-              fontSize: "var(--text-lg)",
-            }}
+        <div className="mt-12 flex flex-col items-center text-muted-foreground">
+          <FilePen size="64" className="stroke-muted-foreground" />
+          <div className="my-4 flex flex-col items-center">
+            <h3 className="text-xl">No courses yet</h3>
+            <p>Create your first course to start teaching.</p>
+          </div>
+          <Button
+            className="cursor-pointer"
+            size={"lg"}
+            onClick={() => setShowCreate(true)}
           >
-            No courses yet
-          </h3>
-          <p style={{ marginBottom: "var(--space-6)" }}>
-            Create your first course to start teaching.
-          </p>
-          <Button onClick={() => setShowCreate(true)}>Create a course</Button>
+            Create a course
+          </Button>
         </div>
       )}
 
       {/* Course list */}
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "var(--space-4)",
-        }}
-      >
-        {courses?.map((course) => (
-          <Card key={course.course_id}>
-            <CardContent
-              style={{
-                padding: "var(--space-5)",
-                display: "grid",
-                gridTemplateColumns: "1fr auto",
-                gap: "var(--space-6)",
-                alignItems: "center",
-              }}
-            >
-              {/* Left */}
-              <div>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "var(--space-3)",
-                    marginBottom: "var(--space-2)",
-                    flexWrap: "wrap",
-                  }}
-                >
-                  <h3 style={{ fontWeight: 600, fontSize: "var(--text-base)" }}>
-                    {course.title}
-                  </h3>
-                  <Badge
-                    variant={course.is_published ? "default" : "secondary"}
-                    style={{
-                      fontSize: "var(--text-xs)",
-                      background: course.is_published
-                        ? "var(--color-success)"
-                        : undefined,
-                      color: course.is_published ? "#fff" : undefined,
-                    }}
-                  >
-                    {course.is_published ? "Published" : "Draft"}
-                  </Badge>
-                </div>
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+        {/* Loading skeleton */}
+        {isLoading &&
+          Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-40" />
+          ))}
 
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "var(--space-4)",
-                    fontSize: "var(--text-sm)",
-                    color: "var(--color-text-muted)",
-                  }}
-                >
-                  {/* @ts-ignore — extra fields from teacher query */}
-                  <span>📦 {course.total_modules ?? 0} modules</span>
-                  {/* @ts-ignore */}
-                  <span>🎬 {course.total_lessons ?? 0} lessons</span>
-                  {/* @ts-ignore */}
-                  <span>👥 {course.total_students ?? 0} students</span>
-                </div>
-              </div>
-
-              {/* Right: actions */}
-              <div style={{ display: "flex", gap: "var(--space-2)" }}>
-                <Button size="sm" variant="outline" asChild>
-                  <Link to={`/courses/${course.slug}/edit`}>Edit</Link>
-                </Button>
-                <Button size="sm" variant="outline" asChild>
-                  <Link to={`/courses/${course.slug}`}>View</Link>
-                </Button>
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  onClick={() => {
-                    if (
-                      confirm(
-                        `Delete "${course.title}"? This cannot be undone.`
-                      )
-                    ) {
-                      deleteMutation.mutate(course.course_id)
-                    }
-                  }}
-                >
-                  Delete
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+        {courses?.map((course) => {
+          return (
+            <TeacherCourseCard
+              key={course.course_id}
+              course={course}
+              deleteMutation={deleteMutation}
+            />
+          )
+        })}
       </div>
 
       {/* Create course dialog */}

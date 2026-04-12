@@ -27,7 +27,7 @@ export default function StudentDashboard() {
             Continue where you left off
           </p>
         </div>
-        <Button size={"lg"} asChild>
+        <Button className="cursor-pointer" size={"lg"} asChild>
           <div className="flex items-center gap-2">
             <BookOpen />
             <Link to="/">Browse courses</Link>
@@ -38,12 +38,12 @@ export default function StudentDashboard() {
       {/* Empty state */}
       {!isLoading && enrollments?.length === 0 && (
         <div className="mt-12 flex flex-col items-center text-muted-foreground">
-          <p style={{ fontSize: "2.5rem", marginBottom: "var(--space-4)" }}>
-            <GraduationCap size="64" className="mb-2 stroke-muted-foreground" />
-          </p>
-          <h3 className="text-xl">No courses yet</h3>
-          <p>Enroll in a course to start learning.</p>
-          <Button asChild size={"lg"}>
+          <GraduationCap size="64" className="stroke-muted-foreground" />
+          <div className="my-4 flex flex-col items-center">
+            <h3 className="text-xl">No courses yet</h3>
+            <p>Enroll in a course to start learning.</p>
+          </div>
+          <Button className="cursor-pointer" asChild size={"lg"}>
             <Link to="/">Browse courses</Link>
           </Button>
         </div>
