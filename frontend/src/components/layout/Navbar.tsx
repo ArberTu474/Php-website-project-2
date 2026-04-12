@@ -25,12 +25,8 @@ export default function Navbar() {
   }
 
   return (
-    <header
-      className="sticky top-0 z-50 border-b border-border bg-background"
-    >
-      <div
-        className="mx-auto my-0 flex max-w-7xl items-center justify-between px-10 py-4"
-      >
+    <header className="sticky top-0 z-50 border-b border-border bg-background">
+      <div className="mx-auto my-0 flex max-w-7xl items-center justify-between px-10 py-3">
         {/* Logo */}
         <Link to="/" className="text-2xl font-extrabold text-primary">
           Learnify

@@ -24,11 +24,9 @@ export default function Layout() {
   }, [logout, navigate])
 
   return (
-    <div
-      style={{ minHeight: "100dvh", display: "flex", flexDirection: "column" }}
-    >
+    <div className="flex min-h-dvh flex-col">
       <Navbar />
-      <main style={{ flex: 1 }}>
+      <main className="flex-1">
         <Outlet />
       </main>
     </div>

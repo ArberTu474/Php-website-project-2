@@ -73,22 +73,10 @@ export default function RegisterPage() {
   }
 
   return (
-    <div
-      style={{
-        minHeight: "calc(100dvh - 64px)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "var(--space-6)",
-      }}
-    >
-      <Card style={{ width: "100%", maxWidth: 480 }}>
-        <CardHeader
-          style={{ textAlign: "center", paddingBottom: "var(--space-2)" }}
-        >
-          <CardTitle style={{ fontSize: "var(--text-xl)" }}>
-            Create an account
-          </CardTitle>
+    <div className="mt-40 flex items-center justify-center p-6">
+      <Card className="w-full max-w-96">
+        <CardHeader className="pb-2 text-center">
+          <CardTitle className="text-2xl">Create an account</CardTitle>
           <CardDescription>
             Join Learnify as a teacher or student
           </CardDescription>
@@ -98,20 +86,10 @@ export default function RegisterPage() {
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "var(--space-4)",
-              }}
+              className="flex flex-col gap-4"
             >
               {/* First + Last name side by side */}
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: "var(--space-4)",
-                }}
-              >
+              <div className="flex gap-4">
                 <FormField
                   control={form.control}
                   name="first_name"
@@ -120,7 +98,7 @@ export default function RegisterPage() {
                       <FormLabel>First name</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Ana"
+                          placeholder="Name"
                           autoComplete="given-name"
                           {...field}
                         />
@@ -137,7 +115,7 @@ export default function RegisterPage() {
                       <FormLabel>Last name</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Koci"
+                          placeholder="Surname"
                           autoComplete="family-name"
                           {...field}
                         />
@@ -203,10 +181,10 @@ export default function RegisterPage() {
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="student">
-                          🎓 Student — I want to learn
+                          Student — I want to learn
                         </SelectItem>
                         <SelectItem value="teacher">
-                          👩‍🏫 Teacher — I want to teach
+                          Teacher — I want to teach
                         </SelectItem>
                       </SelectContent>
                     </Select>
@@ -218,26 +196,16 @@ export default function RegisterPage() {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                style={{ marginTop: "var(--space-2)" }}
+                className="cursor-pointer"
               >
                 {isSubmitting ? "Creating account…" : "Create account"}
               </Button>
             </form>
           </Form>
 
-          <p
-            style={{
-              textAlign: "center",
-              fontSize: "var(--text-sm)",
-              color: "var(--color-text-muted)",
-              marginTop: "var(--space-6)",
-            }}
-          >
+          <p className="mt-2 text-center">
             Already have an account?{" "}
-            <Link
-              to="/login"
-              style={{ color: "var(--color-primary)", fontWeight: 500 }}
-            >
+            <Link to="/login" className="font-medium">
               Log in
             </Link>
           </p>

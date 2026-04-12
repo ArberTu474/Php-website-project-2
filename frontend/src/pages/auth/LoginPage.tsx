@@ -57,21 +57,11 @@ export default function LoginPage() {
 
   return (
     <div
-      style={{
-        minHeight: "calc(100dvh - 64px)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "var(--space-6)",
-      }}
+      className="mt-60 flex items-center justify-center p-6"
     >
-      <Card style={{ width: "100%", maxWidth: 420 }}>
-        <CardHeader
-          style={{ textAlign: "center", paddingBottom: "var(--space-2)" }}
-        >
-          <CardTitle style={{ fontSize: "var(--text-xl)" }}>
-            Welcome back
-          </CardTitle>
+      <Card className="w-full max-w-96">
+        <CardHeader className="pb-2 text-center">
+          <CardTitle className="text-2xl">Welcome back</CardTitle>
           <CardDescription>Log in to your Learnify account</CardDescription>
         </CardHeader>
 
@@ -79,11 +69,7 @@ export default function LoginPage() {
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "var(--space-4)",
-              }}
+              className="flex flex-col gap-4"
             >
               <FormField
                 control={form.control}
@@ -126,26 +112,16 @@ export default function LoginPage() {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                style={{ marginTop: "var(--space-2)" }}
+                className="cursor-pointer"
               >
                 {isSubmitting ? "Logging in…" : "Log in"}
               </Button>
             </form>
           </Form>
 
-          <p
-            style={{
-              textAlign: "center",
-              fontSize: "var(--text-sm)",
-              color: "var(--color-text-muted)",
-              marginTop: "var(--space-6)",
-            }}
-          >
+          <p className="mt-2 text-center">
             Don't have an account?{" "}
-            <Link
-              to="/register"
-              style={{ color: "var(--color-primary)", fontWeight: 500 }}
-            >
+            <Link to="/register" className="font-medium">
               Sign up
             </Link>
           </p>
