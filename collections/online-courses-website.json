@@ -1,0 +1,26 @@
+{
+  "info": {
+    "_postman_id": "29675c70-4a76-40af-9fb4-6cb542a7ff2f",
+    "name": "Online Courses Website",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "802f5af3-3574-44b0-9bce-014881e65316"
+  },
+  "item": [
+    {
+      "name": "New Request",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://example.com",
+          "protocol": "https",
+          "host": [
+            "example",
+            "com"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
