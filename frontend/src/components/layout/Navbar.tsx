@@ -26,7 +26,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background">
-      <div className="mx-auto my-0 flex max-w-7xl items-center justify-between px-10 py-3">
+      <div className="container mx-auto my-0 flex items-center justify-between px-6 py-3">
         {/* Logo */}
         <Link to="/" className="text-2xl font-extrabold text-primary">
           Learnify
@@ -67,30 +67,31 @@ export default function Navbar() {
                     <p className="mb-3 text-lg font-bold">
                       {user?.first_name} {user?.last_name}
                     </p>
-
-                    {user?.role === "teacher" ? (
-                      <div className="flex items-center gap-1">
-                        <Presentation size="20" />
-                        <p className="text-sm">Teacher</p>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-1">
-                        <GraduationCap size="20" />
-                        <p className="text-sm">Student</p>
-                      </div>
-                    )}
+                    <div className="text-sm text-muted-foreground">
+                      {user?.role === "teacher" ? (
+                        <div className="flex items-center gap-1">
+                          <Presentation size="20" />
+                          <p className="">Teacher</p>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-1">
+                          <GraduationCap size="20" />
+                          <p className="">Student</p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link to="/dashboard" className="cursor-pointer">
-                      Dashboard
+                  <DropdownMenuItem className="cursor-pointer text-sm" asChild>
+                    <Link to="/dashboard">
+                      <p>Dashboard</p>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     asChild
                     onClick={handleLogout}
-                    className="cursor-pointer"
+                    className="cursor-pointer text-sm"
                   >
                     <p>Log out</p>
                   </DropdownMenuItem>

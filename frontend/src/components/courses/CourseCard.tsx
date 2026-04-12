@@ -2,32 +2,20 @@ import { Link } from "react-router-dom"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import type { Course } from "@/types"
+import { BookMarked, BookOpen, Star } from "lucide-react"
+import { Button } from "../ui/button"
 
 interface Props {
   course: Course
 }
 
 export default function CourseCard({ course }: Props) {
+  console.log(course)
   return (
-    <Link to={`/courses/${course.slug}`} style={{ textDecoration: "none" }}>
-      <Card
-        style={{
-          overflow: "hidden",
-          transition: "box-shadow var(--transition-interactive)",
-          cursor: "pointer",
-          height: "100%",
-        }}
-        className="hover:shadow-md"
-      >
+    <Link to={`/courses/${course.slug}`}>
+      <Card className="flex h-full cursor-pointer flex-col gap-0 overflow-hidden bg-card p-0 shadow-sm hover:shadow-md">
         {/* Thumbnail */}
-        <div
-          style={{
-            aspectRatio: "16/9",
-            background: "var(--color-surface-offset)",
-            overflow: "hidden",
-            position: "relative",
-          }}
-        >
+        <div className="relative aspect-video overflow-hidden bg-secondary">
           {course.thumbnail_url ? (
             <img
               src={course.thumbnail_url}
@@ -36,81 +24,41 @@ export default function CourseCard({ course }: Props) {
               loading="lazy"
             />
           ) : (
-            <div
-              style={{
-                width: "100%",
-                height: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "2.5rem",
-              }}
-            >
-              📚
+            <div className="flex h-full w-full items-center justify-center">
+              <BookMarked className="size-16 stroke-muted-foreground" />
             </div>
           )}
         </div>
 
-        <CardContent style={{ padding: "var(--space-4)" }}>
+        <CardContent className="p-4">
           {/* Category */}
           {course.category && (
-            <Badge
-              variant="secondary"
-              style={{
-                marginBottom: "var(--space-2)",
-                fontSize: "var(--text-xs)",
-              }}
-            >
-              {course.category}
-            </Badge>
+            <Badge variant="outline">{course.category}</Badge>
           )}
 
-          {/* Title */}
-          <h3
-            style={{
-              fontSize: "var(--text-base)",
-              fontWeight: 600,
-              marginBottom: "var(--space-2)",
-              color: "var(--color-text)",
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
-            }}
-          >
-            {course.title}
-          </h3>
+          <div className="my-2">
+            {/* Title */}
+            <h3 className="line-clamp-3 overflow-hidden text-lg font-semibold text-card-foreground">
+              {course.title}
+            </h3>
 
-          {/* Teacher */}
-          <p
-            style={{
-              fontSize: "var(--text-sm)",
-              color: "var(--color-text-muted)",
-              marginBottom: "var(--space-3)",
-            }}
-          >
-            {course.teacher_name}
-          </p>
+            {/* Teacher */}
+            <p>{course.teacher_name}</p>
+          </div>
 
           {/* Stats row */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "var(--space-3)",
-              fontSize: "var(--text-xs)",
-              color: "var(--color-text-muted)",
-            }}
-          >
+          <div className="flex items-center gap-2">
+            <span className="flex items-center gap-0.5 text-sm leading-none font-semibold text-muted-foreground">
+              <BookOpen className="size-4 stroke-muted-foreground" />
+              {course.total_lessons} lessons
+            </span>
             {course.avg_rating && (
-              <span style={{ color: "#ca8a04", fontWeight: 600 }}>
-                ★ {course.avg_rating}
-                <span style={{ fontWeight: 400, marginLeft: 2 }}>
-                  ({course.total_reviews})
-                </span>
+              <span className="flex items-center gap-0.5 text-sm leading-none font-semibold text-yellow-400">
+                <Star className="size-4 fill-yellow-400 stroke-0" />{" "}
+                {course.avg_rating}
+                <span>({course.total_reviews})</span>
               </span>
             )}
-            <span>{course.total_lessons} lessons</span>
           </div>
         </CardContent>
       </Card>
