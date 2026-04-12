@@ -89,7 +89,9 @@ export default function TeacherCourseCard({ course, deleteMutation }: Props) {
 
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Delete "{course.title}"?</AlertDialogTitle>
+                  <AlertDialogTitle>
+                    Delete <span className="font-bold">{course.title}</span>?
+                  </AlertDialogTitle>
                   <AlertDialogDescription>
                     This will permanently delete the course and all its modules
                     and lessons. This action cannot be undone.

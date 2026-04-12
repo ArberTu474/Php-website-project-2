@@ -10,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -119,29 +120,30 @@ export default function TeacherDashboard() {
       <Dialog open={showCreate} onOpenChange={setShowCreate}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Create a new course</DialogTitle>
+            <DialogTitle className="text-base font-bold">
+              Create a new course
+            </DialogTitle>
+            <DialogDescription>
+              Fill in the details below to create a new course.
+            </DialogDescription>
           </DialogHeader>
 
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "var(--space-4)",
-              padding: "var(--space-2) 0",
-            }}
-          >
-            <div>
-              <Label htmlFor="title">Title</Label>
+          <div className="space-y-4">
+            <div className="space-y-1">
+              <Label className="font-semibold" htmlFor="title">
+                Title
+              </Label>
               <Input
                 id="title"
-                placeholder="e.g. Introduction to Python"
+                placeholder="Title of the course"
                 value={newTitle}
                 onChange={(e) => setNewTitle(e.target.value)}
-                style={{ marginTop: "var(--space-2)" }}
               />
             </div>
-            <div>
-              <Label htmlFor="desc">Description</Label>
+            <div className="space-y-1">
+              <Label htmlFor="desc" className="font-semibold">
+                Description
+              </Label>
               <Input
                 id="desc"
                 placeholder="Short description of the course"
@@ -153,10 +155,15 @@ export default function TeacherDashboard() {
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowCreate(false)}>
+            <Button
+              size={"lg"}
+              variant="outline"
+              onClick={() => setShowCreate(false)}
+            >
               Cancel
             </Button>
             <Button
+              size={"lg"}
               onClick={() => createMutation.mutate()}
               disabled={!newTitle.trim() || createMutation.isPending}
             >
