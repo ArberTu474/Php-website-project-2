@@ -72,15 +72,15 @@ export default function Navbar() {
                     <p className="mb-3 text-lg font-bold">
                       {user?.first_name} {user?.last_name}
                     </p>
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-sm leading-none text-muted-foreground">
                       {user?.role === "teacher" ? (
                         <div className="flex items-center gap-1">
-                          <Presentation size="20" />
+                          <Presentation size="16" />
                           <p className="">Teacher</p>
                         </div>
                       ) : (
                         <div className="flex items-center gap-1">
-                          <GraduationCap size="20" />
+                          <GraduationCap size="16" />
                           <p className="">Student</p>
                         </div>
                       )}
