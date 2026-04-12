@@ -1,8 +1,7 @@
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { useParams, Link } from "react-router-dom"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
-import MDEditor from "@uiw/react-md-editor"
 
 import { coursesApi } from "@/lib/courses"
 import { teacherApi } from "@/lib/teacher"
@@ -12,15 +11,33 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog"
 import type { Module, Lesson } from "@/types"
+import {
+  ArrowLeft,
+  Check,
+  ChevronRight,
+  Clock,
+  Eye,
+  PackageOpen,
+  Plus,
+  SquarePen,
+  Trash,
+  X,
+} from "lucide-react"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Textarea } from "@/components/ui/textarea"
+import {
+  LessonDialog,
+  type LessonFormData,
+} from "@/components/lessons/LessonDialog"
 
 // ── Types for local form state ────────────────────────────────────────────────
 interface ModuleForm {
@@ -28,15 +45,8 @@ interface ModuleForm {
   description: string
 }
 
-interface LessonForm {
-  title: string
-  content: string
-  video_url: string
-  duration_mins: string
-}
-
 const emptyModuleForm = (): ModuleForm => ({ title: "", description: "" })
-const emptyLessonForm = (): LessonForm => ({
+const emptyLessonForm = (): LessonFormData => ({
   title: "",
   content: "",
   video_url: "",
@@ -59,14 +69,14 @@ export default function CourseEditorPage() {
   const [activeLesson, setActiveLesson] = useState<Lesson | null>(null)
 
   const [moduleForm, setModuleForm] = useState<ModuleForm>(emptyModuleForm())
-  const [lessonForm, setLessonForm] = useState<LessonForm>(emptyLessonForm())
+  const [lessonForm, setLessonForm] =
+    useState<LessonFormData>(emptyLessonForm())
 
   // ── Fetch course ──────────────────────────────────────────────────────────
   const { data: course, isLoading } = useQuery({
     queryKey: ["course", slug],
     queryFn: () => coursesApi.getBySlug(slug!),
     enabled: !!slug,
-    // refetchOnMount: 'always',
   })
 
   // ── Course mutations ──────────────────────────────────────────────────────
@@ -126,13 +136,13 @@ export default function CourseEditorPage() {
 
   // ── Lesson mutations ──────────────────────────────────────────────────────
   const createLesson = useMutation({
-    mutationFn: () =>
+    mutationFn: (form: LessonFormData) =>
       teacherApi.createLesson(activeModule!.module_id, {
-        title: lessonForm.title,
-        content: lessonForm.content || undefined,
-        video_url: lessonForm.video_url || undefined,
-        duration_mins: lessonForm.duration_mins
-          ? Number(lessonForm.duration_mins)
+        title: form.title,
+        content: form.content || undefined,
+        video_url: form.video_url || undefined,
+        duration_mins: form.duration_mins
+          ? Number(form.duration_mins)
           : undefined,
       }),
     onSuccess: () => {
@@ -145,13 +155,13 @@ export default function CourseEditorPage() {
   })
 
   const updateLesson = useMutation({
-    mutationFn: () =>
+    mutationFn: (form: LessonFormData) =>
       teacherApi.updateLesson(activeLesson!.lesson_id, {
-        title: lessonForm.title,
-        content: lessonForm.content || undefined,
-        video_url: lessonForm.video_url || undefined,
-        duration_mins: lessonForm.duration_mins
-          ? Number(lessonForm.duration_mins)
+        title: form.title,
+        content: form.content || undefined,
+        video_url: form.video_url || undefined,
+        duration_mins: form.duration_mins
+          ? Number(form.duration_mins)
           : undefined,
       }),
     onSuccess: () => {
@@ -161,6 +171,22 @@ export default function CourseEditorPage() {
     },
     onError: (err: Error) => toast.error(err.message),
   })
+
+  const { mutate: createLessonMutate } = createLesson
+  const { mutate: updateLessonMutate } = updateLesson
+
+  const handleLessonSave = useCallback(
+    (form: LessonFormData) => {
+      lessonDialog === "create"
+        ? createLesson.mutate(form)
+        : updateLesson.mutate(form)
+    },
+    [lessonDialog, createLessonMutate, updateLessonMutate]
+  )
+
+  const handleLessonClose = useCallback(() => {
+    setLessonDialog(null)
+  }, [])
 
   // ── Helpers ───────────────────────────────────────────────────────────────
   function openCreateModule() {
@@ -212,204 +238,113 @@ export default function CourseEditorPage() {
   // ── Loading ───────────────────────────────────────────────────────────────
   if (isLoading || !course)
     return (
-      <div
-        style={{
-          maxWidth: 860,
-          margin: "0 auto",
-          padding: "var(--space-12) var(--space-6)",
-          display: "flex",
-          flexDirection: "column",
-          gap: "var(--space-4)",
-        }}
-      >
-        {Array.from({ length: 3 }).map((_, i) => (
-          <div
-            key={i}
-            style={{
-              height: 80,
-              borderRadius: "var(--radius-lg)",
-              background: "var(--color-surface-offset)",
-            }}
-            className="animate-pulse"
-          />
-        ))}
+      <div className="container mx-auto my-0 mt-40 px-6 py-3">
+        <div className="space-y-4">
+          {isLoading &&
+            Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="h-60" />
+            ))}
+        </div>
       </div>
     )
 
   return (
-    <div
-      style={{
-        maxWidth: 860,
-        margin: "0 auto",
-        padding: "var(--space-12) var(--space-6)",
-      }}
-    >
+    <div className="container mx-auto my-0 px-6 py-3">
       {/* ── Header ─────────────────────────────────────────────────────── */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
-          marginBottom: "var(--space-8)",
-          flexWrap: "wrap",
-          gap: "var(--space-4)",
-        }}
-      >
-        <div>
-          <Link
-            to="/dashboard"
-            style={{
-              fontSize: "var(--text-sm)",
-              color: "var(--color-text-muted)",
-              textDecoration: "none",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "var(--space-1)",
-              marginBottom: "var(--space-3)",
-            }}
+      <div className="mt-6 space-y-2">
+        <div className="flex items-center gap-2">
+          <Button variant={"ghost"} size={"icon-lg"} asChild>
+            <Link to="/dashboard">
+              <ArrowLeft />
+            </Link>
+          </Button>
+          <h1 className="mr-2 text-xl font-bold md:text-2xl">{course.title}</h1>
+          <Badge
+            className="leading-none"
+            variant={course.is_published ? "secondary" : "destructive"}
           >
-            ← Dashboard
-          </Link>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "var(--space-3)",
-            }}
-          >
-            <h1 style={{ fontSize: "var(--text-xl)", fontWeight: 700 }}>
-              {course.title}
-            </h1>
-            <Badge
-              style={{
-                background: course.is_published
-                  ? "var(--color-success)"
-                  : undefined,
-                color: course.is_published ? "#fff" : undefined,
-                fontSize: "var(--text-xs)",
-              }}
-              variant={course.is_published ? "default" : "secondary"}
-            >
-              {course.is_published ? "Published" : "Draft"}
-            </Badge>
-          </div>
+            {course.is_published ? "Published" : "Draft"}
+          </Badge>
         </div>
 
-        <div style={{ display: "flex", gap: "var(--space-3)" }}>
-          <Button
-            variant="outline"
-            onClick={() => togglePublish.mutate()}
-            disabled={togglePublish.isPending}
-          >
-            {course.is_published ? "Unpublish" : "Publish"}
-          </Button>
-          <Button variant="outline" asChild>
-            <Link to={`/courses/${slug}`}>Preview</Link>
-          </Button>
+        <div className="gap items flex gap-2">
+          <div className="flex w-full justify-end gap-2">
+            <Button variant="outline" asChild>
+              <Link to={`/courses/${slug}`}>
+                <Eye />
+                Preview
+              </Link>
+            </Button>
+            <Button
+              variant={course.is_published ? "destructive" : "default"}
+              onClick={() => togglePublish.mutate()}
+              disabled={togglePublish.isPending}
+            >
+              {course.is_published ? (
+                <>
+                  <X /> Unpublish
+                </>
+              ) : (
+                <>
+                  <Check /> Publish
+                </>
+              )}
+            </Button>
+          </div>
         </div>
       </div>
 
-      <Separator style={{ marginBottom: "var(--space-8)" }} />
-
       {/* ── Modules ────────────────────────────────────────────────────── */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: "var(--space-6)",
-        }}
-      >
-        <h2 style={{ fontSize: "var(--text-lg)", fontWeight: 600 }}>
-          Curriculum
-        </h2>
-        <Button size="sm" onClick={openCreateModule}>
-          + Add module
+      <div className="my-6 flex items-center justify-between">
+        <h2 className="text-xl font-semibold">Curriculum</h2>
+        <Button size="lg" onClick={openCreateModule}>
+          <Plus />
+          Add module
         </Button>
       </div>
 
       {/* Empty curriculum state */}
       {course.modules?.length === 0 && (
-        <div
-          style={{
-            textAlign: "center",
-            padding: "var(--space-12)",
-            border: "2px dashed var(--color-border)",
-            borderRadius: "var(--radius-lg)",
-            color: "var(--color-text-muted)",
-          }}
-        >
-          <p style={{ fontSize: "2rem", marginBottom: "var(--space-3)" }}>📦</p>
-          <p style={{ marginBottom: "var(--space-4)" }}>
-            No modules yet. Add your first module to get started.
+        <div className="flex flex-col items-center gap-2 rounded-lg border-2 border-dashed border-border p-4 text-muted-foreground">
+          <PackageOpen size="64" />
+          <p className="text-center">
+            No modules yet. <br /> Add your first module to get started.
           </p>
-          <Button size="sm" onClick={openCreateModule}>
-            Add module
-          </Button>
         </div>
       )}
 
       {/* Module list */}
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "var(--space-6)",
-        }}
-      >
+      <div className="space-y-4">
+        {isLoading &&
+          Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-40" />
+          ))}
+
         {course.modules?.map((module: Module) => (
           <div
             key={module.module_id}
-            style={{
-              border: "1px solid var(--color-border)",
-              borderRadius: "var(--radius-lg)",
-              overflow: "hidden",
-            }}
+            className="overflow-hidden rounded-lg border border-border"
           >
             {/* Module header */}
-            <div
-              style={{
-                padding: "var(--space-4) var(--space-5)",
-                background: "var(--color-surface)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: "var(--space-4)",
-                borderBottom: "1px solid var(--color-border)",
-              }}
-            >
+            <div className="flex items-start justify-between gap-2 border-t border-border bg-muted/50 px-4 py-3">
               <div>
-                <h3 style={{ fontWeight: 600, fontSize: "var(--text-base)" }}>
-                  {module.title}
-                </h3>
+                <h3 className="text-base font-semibold">{module.title}</h3>
                 {module.description && (
-                  <p
-                    style={{
-                      fontSize: "var(--text-sm)",
-                      color: "var(--color-text-muted)",
-                      marginTop: "var(--space-1)",
-                    }}
-                  >
+                  <p className="line-clamp-2 max-w-prose text-sm text-muted-foreground">
                     {module.description}
                   </p>
                 )}
               </div>
-              <div
-                style={{
-                  display: "flex",
-                  gap: "var(--space-2)",
-                  flexShrink: 0,
-                }}
-              >
+              <div className="flex items-center gap-2">
                 <Button
-                  size="sm"
+                  size={"icon-lg"}
                   variant="outline"
                   onClick={() => openEditModule(module)}
                 >
-                  Edit
+                  <SquarePen />
                 </Button>
                 <Button
-                  size="sm"
+                  size={"icon-lg"}
                   variant="destructive"
                   onClick={() => {
                     if (
@@ -421,7 +356,7 @@ export default function CourseEditorPage() {
                     }
                   }}
                 >
-                  Delete
+                  <Trash />
                 </Button>
               </div>
             </div>
@@ -430,37 +365,20 @@ export default function CourseEditorPage() {
             {module.lessons.map((lesson: Lesson, idx: number) => (
               <div
                 key={lesson.lesson_id}
-                style={{
-                  padding: "var(--space-3) var(--space-5)",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "var(--space-3)",
-                  background: "var(--color-surface-2)",
-                  borderBottom:
-                    idx < module.lessons.length - 1
-                      ? "1px solid var(--color-border)"
-                      : "none",
-                }}
+                className="flex items-center gap-2 border-t border-border px-4 py-2"
               >
-                <span
-                  style={{
-                    color: "var(--color-text-faint)",
-                    fontSize: "var(--text-sm)",
-                  }}
-                >
-                  ▶
+                <span>
+                  <ChevronRight size="16" />
                 </span>
-                <span style={{ flex: 1, fontSize: "var(--text-sm)" }}>
+                <p className="flex-1 text-sm">
+                  <span className="font-semibold">{idx + 1}</span>
+                  {". "}
                   {lesson.title}
-                </span>
+                </p>
                 {lesson.duration_mins && (
-                  <span
-                    style={{
-                      fontSize: "var(--text-xs)",
-                      color: "var(--color-text-muted)",
-                    }}
-                  >
-                    {lesson.duration_mins} min
+                  <span className="flex items-center gap-1 text-sm text-muted-foreground">
+                    <Clock size="16" />
+                    <p>{lesson.duration_mins} min</p>
                   </span>
                 )}
                 <Button
@@ -477,25 +395,10 @@ export default function CourseEditorPage() {
             {/* Add lesson row */}
             <button
               onClick={() => openCreateLesson(module)}
-              style={{
-                width: "100%",
-                padding: "var(--space-3) var(--space-5)",
-                background: "var(--color-surface-2)",
-                border: "none",
-                borderTop:
-                  module.lessons.length > 0
-                    ? "1px dashed var(--color-border)"
-                    : "none",
-                cursor: "pointer",
-                fontSize: "var(--text-sm)",
-                color: "var(--color-primary)",
-                textAlign: "left",
-                display: "flex",
-                alignItems: "center",
-                gap: "var(--space-2)",
-              }}
+              className="flex w-full cursor-pointer items-center justify-center gap-2 border-t border-dashed border-border px-4 py-2 hover:bg-muted/50"
             >
-              + Add lesson
+              <Plus size="20" />
+              <p className="text-base font-semibold">Add lesson</p>
             </button>
           </div>
         ))}
@@ -506,52 +409,57 @@ export default function CourseEditorPage() {
         open={moduleDialog !== null}
         onOpenChange={(open) => !open && setModuleDialog(null)}
       >
-        <DialogContent>
+        <DialogContent className="sm:max-w-175">
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="text-base font-bold">
               {moduleDialog === "create" ? "Add module" : "Edit module"}
             </DialogTitle>
+            <DialogDescription>
+              Fill in the details below to create a new module.
+            </DialogDescription>
           </DialogHeader>
 
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "var(--space-4)",
-              padding: "var(--space-2) 0",
-            }}
-          >
-            <div>
-              <Label htmlFor="module-title">Title</Label>
+          <div className="space-y-4">
+            <div className="space-y-1">
+              <Label htmlFor="module-title" className="font-semibold">
+                Title
+              </Label>
               <Input
                 id="module-title"
-                placeholder="e.g. Getting Started"
+                placeholder=""
                 value={moduleForm.title}
                 onChange={(e) =>
                   setModuleForm((f) => ({ ...f, title: e.target.value }))
                 }
-                style={{ marginTop: "var(--space-2)" }}
               />
             </div>
-            <div>
-              <Label htmlFor="module-desc">Description (optional)</Label>
-              <Input
+            <div className="space-y-1">
+              <Label htmlFor="module-desc" className="font-semibold">
+                Description (optional)
+              </Label>
+              <Textarea
                 id="module-desc"
                 placeholder="Short description"
                 value={moduleForm.description}
+                className="min-h-60 resize-none overflow-y-scroll"
+                rows={10}
                 onChange={(e) =>
                   setModuleForm((f) => ({ ...f, description: e.target.value }))
                 }
-                style={{ marginTop: "var(--space-2)" }}
               />
             </div>
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setModuleDialog(null)}>
+            <Button
+              size={"lg"}
+              variant="outline"
+              onClick={() => setModuleDialog(null)}
+            >
               Cancel
             </Button>
             <Button
+              size={"lg"}
               onClick={() =>
                 moduleDialog === "create"
                   ? createModule.mutate()
@@ -574,121 +482,13 @@ export default function CourseEditorPage() {
       </Dialog>
 
       {/* ── Lesson Dialog ────────────────────────────────────────────────── */}
-      <Dialog
-        open={lessonDialog !== null}
-        onOpenChange={(open) => !open && setLessonDialog(null)}
-      >
-        <DialogContent style={{ maxWidth: 860, width: "95vw" }}>
-          <DialogHeader>
-            <DialogTitle>
-              {lessonDialog === "create" ? "Add lesson" : "Edit lesson"}
-            </DialogTitle>
-          </DialogHeader>
-
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "var(--space-4)",
-              padding: "var(--space-2) 0",
-            }}
-          >
-            {/* Title + duration row */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 140px",
-                gap: "var(--space-4)",
-              }}
-            >
-              <div>
-                <Label htmlFor="lesson-title">Title</Label>
-                <Input
-                  id="lesson-title"
-                  placeholder="e.g. What is PHP?"
-                  value={lessonForm.title}
-                  onChange={(e) =>
-                    setLessonForm((f) => ({ ...f, title: e.target.value }))
-                  }
-                  style={{ marginTop: "var(--space-2)" }}
-                />
-              </div>
-              <div>
-                <Label htmlFor="lesson-duration">Duration (mins)</Label>
-                <Input
-                  id="lesson-duration"
-                  type="number"
-                  placeholder="10"
-                  value={lessonForm.duration_mins}
-                  onChange={(e) =>
-                    setLessonForm((f) => ({
-                      ...f,
-                      duration_mins: e.target.value,
-                    }))
-                  }
-                  style={{ marginTop: "var(--space-2)" }}
-                />
-              </div>
-            </div>
-
-            {/* Video URL */}
-            <div>
-              <Label htmlFor="lesson-video">Video URL (optional)</Label>
-              <Input
-                id="lesson-video"
-                placeholder="https://..."
-                value={lessonForm.video_url}
-                onChange={(e) =>
-                  setLessonForm((f) => ({ ...f, video_url: e.target.value }))
-                }
-                style={{ marginTop: "var(--space-2)" }}
-              />
-            </div>
-
-            {/* Markdown editor */}
-            <div>
-              <Label>Content (Markdown)</Label>
-              <div
-                style={{ marginTop: "var(--space-2)" }}
-                data-color-mode="light"
-              >
-                <MDEditor
-                  value={lessonForm.content}
-                  onChange={(val) =>
-                    setLessonForm((f) => ({ ...f, content: val ?? "" }))
-                  }
-                  height={340}
-                  preview="live"
-                />
-              </div>
-            </div>
-          </div>
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setLessonDialog(null)}>
-              Cancel
-            </Button>
-            <Button
-              onClick={() =>
-                lessonDialog === "create"
-                  ? createLesson.mutate()
-                  : updateLesson.mutate()
-              }
-              disabled={
-                !lessonForm.title.trim() ||
-                createLesson.isPending ||
-                updateLesson.isPending
-              }
-            >
-              {createLesson.isPending || updateLesson.isPending
-                ? "Saving…"
-                : lessonDialog === "create"
-                  ? "Add lesson"
-                  : "Save changes"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <LessonDialog
+        mode={lessonDialog}
+        initialValues={lessonForm}
+        isPending={createLesson.isPending || updateLesson.isPending}
+        onSave={handleLessonSave}
+        onClose={handleLessonClose}
+      />
     </div>
   )
 }

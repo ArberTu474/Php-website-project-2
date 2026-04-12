@@ -149,7 +149,6 @@ export default function TeacherDashboard() {
                 placeholder="Short description of the course"
                 value={newDesc}
                 onChange={(e) => setNewDesc(e.target.value)}
-                style={{ marginTop: "var(--space-2)" }}
               />
             </div>
           </div>
