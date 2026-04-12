@@ -56,9 +56,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div
-      className="mt-60 flex items-center justify-center p-6"
-    >
+    <div className="mt-60 flex items-center justify-center p-6">
       <Card className="w-full max-w-96">
         <CardHeader className="pb-2 text-center">
           <CardTitle className="text-2xl">Welcome back</CardTitle>
@@ -69,7 +67,7 @@ export default function LoginPage() {
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="flex flex-col gap-4"
+              className="flex flex-col gap-4 text-xl!"
             >
               <FormField
                 control={form.control}
@@ -111,6 +109,7 @@ export default function LoginPage() {
 
               <Button
                 type="submit"
+                size={"lg"}
                 disabled={isSubmitting}
                 className="cursor-pointer"
               >

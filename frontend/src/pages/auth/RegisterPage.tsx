@@ -195,6 +195,7 @@ export default function RegisterPage() {
 
               <Button
                 type="submit"
+                size={"lg"}
                 disabled={isSubmitting}
                 className="cursor-pointer"
               >

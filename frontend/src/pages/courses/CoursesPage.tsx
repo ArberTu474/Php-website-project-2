@@ -47,7 +47,7 @@ export default function CoursesPage() {
       )}
 
       {/* Grid */}
-      <div className="grid w-full grid-cols-1 items-stretch gap-4 sm:grid-cols-3 md:grid-cols-4">
+      <div className="grid w-full grid-cols-1 items-stretch gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
         {isLoading
           ? Array.from({ length: 4 }).map((_, i) => (
               <Skeleton className="h-80" key={i} />
