@@ -8,10 +8,6 @@ import { useAuthStore } from "@/store/authStore"
 
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
-
-import ReviewForm from "@/components/reviews/ReviewForm"
-import ReviewList from "@/components/reviews/ReviewList"
 import {
   Check,
   ChevronRight,
@@ -206,7 +202,10 @@ export default function CourseDetailPage() {
 
               {/* Lessons list */}
               {module.lessons.map((lesson, idx) => (
-                <div className="flex items-center gap-2 border-t border-border px-4 py-2">
+                <div
+                  key={idx}
+                  className="flex items-center gap-2 border-t border-border px-4 py-2"
+                >
                   <span>
                     <ChevronRight size="16" />
                   </span>

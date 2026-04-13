@@ -5,12 +5,11 @@ import { toast } from "sonner"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import "github-markdown-css/github-markdown.css"
-// import "github-markdown-css/github-markdown-light.css"
 
 import { coursesApi } from "@/lib/courses"
 import { lessonsApi } from "@/lib/lessons"
 import { enrollmentsApi } from "@/lib/enrollments"
-import { useAuthStore } from "@/store/authStore"
+// import { useAuthStore } from "@/store/authStore"
 
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
@@ -23,13 +22,16 @@ import {
   Clock,
   PanelLeftClose,
   PanelLeftOpen,
+  Check,
+  FileText,
+  CircleSmall,
 } from "lucide-react"
 
 export default function LearnView() {
   const { slug, lessonId } = useParams<{ slug: string; lessonId: string }>()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-  const { user } = useAuthStore()
+  // const { user } = useAuthStore()
 
   const [sidebarOpen, setSidebarOpen] = useState(true)
 
@@ -44,7 +46,8 @@ export default function LearnView() {
   const { data: lesson, isLoading: lessonLoading } = useQuery({
     queryKey: ["lesson", lessonId],
     queryFn: () => lessonsApi.getById(lessonId!),
-    enabled: !!lessonId,
+    enabled: !!lessonId && lessonId !== slug,
+    retry: false,
   })
 
   // Fetch enrollments to get progress + enrollment_id
@@ -108,84 +111,45 @@ export default function LearnView() {
 
   if (!course)
     return (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          height: "calc(100dvh - 64px)",
-          color: "var(--color-text-muted)",
-        }}
-      >
-        Loading course…
+      <div className="flex h-[calc(100dvh-65px)] items-center justify-center overflow-hidden">
+        <div className="mx-auto my-0 size-16 animate-spin rounded-full border-6 border-border border-t-transparent"></div>
       </div>
     )
 
   return (
-    <div
-      // style={{
-      //   display: "flex",
-      //   height: "calc(100dvh - 64px)",
-      //   overflow: "hidden",
-      // }}
-      className="flex h-[calc(100dvh-65px)] overflow-hidden"
-    >
+    <div className="flex h-[calc(100dvh-65px)] overflow-hidden">
       {/* ── Sidebar ────────────────────────────────────────────────────── */}
       <aside
-        style={{
-          width: sidebarOpen ? 300 : 0,
-          minWidth: sidebarOpen ? 300 : 0,
-          overflow: "hidden",
-          transition: "width 200ms ease, min-width 200ms ease",
-          borderRight: "1px solid var(--color-border)",
-          background: "var(--color-surface)",
-          display: "flex",
-          flexDirection: "column",
-        }}
+        className={`flex flex-col overflow-hidden border-r border-border bg-background transition-all duration-200 ease-in-out ${sidebarOpen ? "w-75 min-w-75" : "w-0 min-w-0"} `}
       >
         {/* Sidebar header */}
-        <div style={{ padding: "var(--space-4) var(--space-5)" }}>
-          <Link
-            to={`/courses/${slug}`}
-            style={{
-              fontSize: "var(--text-xs)",
-              color: "var(--color-text-muted)",
-              textDecoration: "none",
-              display: "flex",
-              alignItems: "center",
-              gap: "var(--space-1)",
-              marginBottom: "var(--space-3)",
-            }}
-          >
-            ← Back to course
-          </Link>
-          <h2
-            style={{
-              fontSize: "var(--text-sm)",
-              fontWeight: 600,
-              marginBottom: "var(--space-3)",
-              lineHeight: 1.3,
-            }}
-          >
+        <div className="pt-2 pb-4">
+          <div className="px-4 pb-2">
+            <Button className="p-0" variant={"link"} asChild>
+              <Link
+                to={`/courses/${slug}`}
+                className="flex items-center gap-0 leading-none"
+              >
+                <ChevronLeft /> Back to course
+              </Link>
+            </Button>
+          </div>
+          <Separator />
+          <h2 className="px-4 pt-4 pb-2 text-lg leading-snug font-bold">
             {course.title}
           </h2>
 
           {/* Overall progress */}
           {enrollment && (
-            <div>
+            <div className="px-4">
               <Progress
                 value={enrollment.progress.percent}
-                style={{ height: 4, marginBottom: "var(--space-1)" }}
+                className="mb-1 h-1.5"
               />
-              <p
-                style={{
-                  fontSize: "var(--text-xs)",
-                  color: "var(--color-text-muted)",
-                }}
-              >
+              <p className="text-xs font-semibold">
                 {enrollment.progress.completed_lessons}/
-                {enrollment.progress.total_lessons} lessons ·{" "}
-                {enrollment.progress.percent}%
+                {enrollment.progress.total_lessons} (
+                {enrollment.progress.percent}%)
               </p>
             </div>
           )}
@@ -194,22 +158,11 @@ export default function LearnView() {
         <Separator />
 
         {/* Curriculum */}
-        <div style={{ flex: 1, overflowY: "auto" }}>
+        <div className="flex-1 overflow-auto">
           {course.modules?.map((module: Module) => (
             <div key={module.module_id}>
               {/* Module title */}
-              <div
-                style={{
-                  padding: "var(--space-3) var(--space-5)",
-                  fontSize: "var(--text-xs)",
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.06em",
-                  color: "var(--color-text-muted)",
-                  background: "var(--color-surface-offset)",
-                  borderBottom: "1px solid var(--color-border)",
-                }}
-              >
+              <div className="border-b border-border bg-muted p-4 py-1 text-sm font-semibold uppercase">
                 {module.title}
               </div>
 
@@ -224,66 +177,41 @@ export default function LearnView() {
                   <button
                     key={l.lesson_id}
                     onClick={() => goToLesson(l)}
-                    style={{
-                      width: "100%",
-                      textAlign: "left",
-                      padding: "var(--space-3) var(--space-5)",
-                      background: isActive
-                        ? "var(--color-primary-highlight, #cedcd8)"
-                        : "transparent",
-                      borderBottom: "1px solid var(--color-border)",
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "flex-start",
-                      gap: "var(--space-3)",
-                      border: "none",
-                      transition: "background var(--transition-interactive)",
-                    }}
+                    className={`${isActive ? "bg-muted" : "bg-transparent"} flex w-full cursor-pointer items-start gap-1 border-b border-border px-4 py-2 text-left`}
                   >
                     {/* Icon: checkmark if done, play if active, circle if not started */}
                     <span
-                      style={{
-                        fontSize: "0.75rem",
-                        marginTop: 2,
-                        flexShrink: 0,
-                        width: 16,
-                        textAlign: "center",
-                        color: isDone
-                          ? "var(--color-success)"
+                      className={`mt-0.5 text-center text-xs ${
+                        isDone
+                          ? "text-green-600"
                           : isActive
-                            ? "var(--color-primary)"
-                            : "var(--color-text-faint)",
-                      }}
+                            ? "text-primary"
+                            : "text-muted-foreground"
+                      } `}
                     >
-                      {isDone ? "✓" : isActive ? "▶" : "○"}
+                      {isDone ? (
+                        <Check size="18" />
+                      ) : isActive ? (
+                        <ChevronRight size="18" />
+                      ) : (
+                        <CircleSmall size="18" />
+                      )}
                     </span>
 
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <p
-                        style={{
-                          fontSize: "var(--text-sm)",
-                          fontWeight: isActive ? 600 : 400,
-                          color: isDone
-                            ? "var(--color-text-muted)"
+                        className={`text-sm leading-[1.4] ${isActive ? "font-semibold" : "font-normal"} ${
+                          isDone
+                            ? "text-muted-foreground"
                             : isActive
-                              ? "var(--color-primary)"
-                              : "var(--color-text)",
-                          lineHeight: 1.4,
-                          textDecorationLine:
-                            isDone && !isActive ? "line-through" : "none",
-                          textDecorationColor: "var(--color-text-faint)",
-                        }}
+                              ? "text-primary"
+                              : "text-foreground"
+                        } ${isDone && !isActive ? "italic decoration-muted-foreground" : ""} `}
                       >
                         {l.title}
                       </p>
                       {l.duration_mins && (
-                        <p
-                          style={{
-                            fontSize: "var(--text-xs)",
-                            color: "var(--color-text-faint)",
-                            marginTop: 2,
-                          }}
-                        >
+                        <p className="text-xs text-muted-foreground">
                           {l.duration_mins} min
                         </p>
                       )}
@@ -388,6 +316,7 @@ export default function LearnView() {
 
                 {/* Mark complete */}
                 <Button
+                  size={"lg"}
                   onClick={() => completeMutation.mutate()}
                   disabled={
                     isLessonComplete ||
@@ -400,25 +329,21 @@ export default function LearnView() {
                       : "default"
                   }
                 >
-                  {isLessonComplete || completeMutation.isSuccess
-                    ? "Completed"
-                    : completeMutation.isPending
-                      ? "Saving…"
-                      : "Mark as complete"}
+                  {isLessonComplete || completeMutation.isSuccess ? (
+                    <>
+                      <Check /> Completed
+                    </>
+                  ) : completeMutation.isPending ? (
+                    "Saving…"
+                  ) : (
+                    "Mark as complete"
+                  )}
                 </Button>
               </div>
             </>
           ) : (
-            <div
-              style={{
-                color: "var(--color-text-muted)",
-                textAlign: "center",
-                paddingTop: "var(--space-16)",
-              }}
-            >
-              <p style={{ fontSize: "2rem", marginBottom: "var(--space-4)" }}>
-                👈
-              </p>
+            <div className="flex flex-col items-center gap-2 text-muted-foreground">
+              <FileText size="64" />
               <p>Select a lesson from the sidebar to begin.</p>
             </div>
           )}

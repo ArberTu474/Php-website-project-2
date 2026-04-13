@@ -22,6 +22,7 @@ export default function EnrollmentCard({
   isComplete,
   progress,
 }: EnrollmentCardProps) {
+  console.log(progress.percent === 100 ? "bg-green-600" : "")
   return (
     <Card key={enrollment.enrollment_id} className="gap-0 p-4">
       <CardContent className="p-0">
@@ -49,7 +50,12 @@ export default function EnrollmentCard({
         </div>
         {/* Progress bar */}
         <div className="my-4">
-          <Progress value={progress.percent} className="h-1.5" />
+          <Progress
+            value={progress.percent}
+            className={`mb-1 h-1.5 ${
+              progress.percent === 100 ? "[&>div]:bg-green-600/60" : ""
+            }`}
+          />
           <span className="text-sm font-semibold">
             {progress.completed_lessons}/{progress.total_lessons} (
             {progress.percent}%)
