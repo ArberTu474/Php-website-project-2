@@ -17,6 +17,13 @@ import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import type { Lesson, Module } from "@/types"
+import {
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  PanelLeftClose,
+  PanelLeftOpen,
+} from "lucide-react"
 
 export default function LearnView() {
   const { slug, lessonId } = useParams<{ slug: string; lessonId: string }>()
@@ -116,11 +123,12 @@ export default function LearnView() {
 
   return (
     <div
-      style={{
-        display: "flex",
-        height: "calc(100dvh - 64px)",
-        overflow: "hidden",
-      }}
+      // style={{
+      //   display: "flex",
+      //   height: "calc(100dvh - 64px)",
+      //   overflow: "hidden",
+      // }}
+      className="flex h-[calc(100dvh-65px)] overflow-hidden"
     >
       {/* ── Sidebar ────────────────────────────────────────────────────── */}
       <aside
@@ -289,122 +297,44 @@ export default function LearnView() {
       </aside>
 
       {/* ── Main content ───────────────────────────────────────────────── */}
-      <div
-        style={{
-          flex: 1,
-          overflow: "auto",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+      <div className="flex flex-1 flex-col overflow-auto">
         {/* Top bar */}
-        <div
-          style={{
-            padding: "var(--space-3) var(--space-6)",
-            borderBottom: "1px solid var(--color-border)",
-            display: "flex",
-            alignItems: "center",
-            gap: "var(--space-4)",
-            background: "var(--color-surface)",
-            flexShrink: 0,
-          }}
-        >
-          <button
+        <div className="flex shrink-0 items-center gap-4 p-4">
+          <Button
             onClick={() => setSidebarOpen((o) => !o)}
             aria-label="Toggle sidebar"
-            style={{
-              background: "none",
-              border: "1px solid var(--color-border)",
-              borderRadius: "var(--radius-sm)",
-              padding: "var(--space-1) var(--space-2)",
-              cursor: "pointer",
-              fontSize: "var(--text-sm)",
-              color: "var(--color-text-muted)",
-            }}
+            variant={"outline"}
+            size={"icon-lg"}
           >
-            {sidebarOpen ? "← Hide" : "→ Show"}
-          </button>
-          <span
-            style={{
-              fontSize: "var(--text-sm)",
-              color: "var(--color-text-muted)",
-            }}
-          >
-            {lesson?.title ?? ""}
-          </span>
+            {sidebarOpen ? <PanelLeftClose /> : <PanelLeftOpen />}
+          </Button>
         </div>
 
         {/* Lesson content */}
-        <div
-          style={{
-            flex: 1,
-            maxWidth: 780,
-            width: "100%",
-            margin: "0 auto",
-            padding: "var(--space-10) var(--space-6)",
-          }}
-        >
+        <div className="mx-auto my-0 w-full max-w-255 p-4">
           {lessonLoading ? (
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "var(--space-4)",
-              }}
-            >
-              {Array.from({ length: 5 }).map((_, i) => (
-                <div
-                  key={i}
-                  style={{
-                    height: i === 0 ? 32 : 16,
-                    width: i === 0 ? "60%" : `${70 + Math.random() * 25}%`,
-                    borderRadius: "var(--radius-sm)",
-                    background: "var(--color-surface-offset)",
-                  }}
-                  className="animate-pulse"
-                />
-              ))}
+            <div className="my-10">
+              <div className="mx-auto my-0 size-16 animate-spin rounded-full border-6 border-border border-t-transparent"></div>
             </div>
           ) : lesson ? (
             <>
               {/* Title */}
-              <h1
-                style={{
-                  fontSize: "var(--text-xl)",
-                  fontWeight: 700,
-                  marginBottom: "var(--space-2)",
-                }}
-              >
-                {lesson.title}
-              </h1>
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl font-bold">{lesson.title}</h1>
 
-              {lesson.duration_mins && (
-                <Badge
-                  variant="secondary"
-                  style={{
-                    marginBottom: "var(--space-8)",
-                    fontSize: "var(--text-xs)",
-                  }}
-                >
-                  🕐 {lesson.duration_mins} min
-                </Badge>
-              )}
-
+                {lesson.duration_mins && (
+                  <Badge variant="secondary" className="text-muted-foreground">
+                    <Clock /> {lesson.duration_mins} min
+                  </Badge>
+                )}
+              </div>
               {/* Video */}
               {lesson.video_url &&
                 (() => {
                   const embedUrl = getYouTubeEmbedUrl(lesson.video_url)
                   if (!embedUrl) return null
                   return (
-                    <div
-                      style={{
-                        marginBottom: "var(--space-8)",
-                        borderRadius: "var(--radius-lg)",
-                        overflow: "hidden",
-                        aspectRatio: "16/9",
-                        position: "relative",
-                      }}
-                    >
+                    <div className="relative my-4 aspect-video overflow-hidden rounded-lg">
                       <iframe
                         src={embedUrl}
                         title={lesson.title}
@@ -425,13 +355,7 @@ export default function LearnView() {
 
               {/* Markdown content */}
               {lesson.content && (
-                <div
-                  style={{
-                    lineHeight: 1.8,
-                    color: "var(--color-text)",
-                    fontSize: "var(--text-base)",
-                  }}
-                >
+                <div className="text-base text-foreground">
                   <div className="markdown-body bg-red-500">
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>
                       {lesson.content}
@@ -441,35 +365,24 @@ export default function LearnView() {
               )}
 
               {/* Actions */}
-              <div
-                style={{
-                  marginTop: "var(--space-12)",
-                  paddingTop: "var(--space-6)",
-                  borderTop: "1px solid var(--color-border)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  flexWrap: "wrap",
-                  gap: "var(--space-4)",
-                }}
-              >
+              <div className="mt-4 flex items-center justify-between gap-4 border-t border-border py-4">
                 {/* Prev/Next */}
-                <div style={{ display: "flex", gap: "var(--space-3)" }}>
+                <div className="flex items-center gap-2">
                   <Button
                     variant="outline"
-                    size="sm"
+                    size="lg"
                     disabled={!prevLesson}
                     onClick={() => prevLesson && goToLesson(prevLesson)}
                   >
-                    ← Previous
+                    <ChevronLeft /> Previous
                   </Button>
                   <Button
                     variant="outline"
-                    size="sm"
+                    size="lg"
                     disabled={!nextLesson}
                     onClick={() => nextLesson && goToLesson(nextLesson)}
                   >
-                    Next →
+                    Next <ChevronRight />
                   </Button>
                 </div>
 
@@ -488,7 +401,7 @@ export default function LearnView() {
                   }
                 >
                   {isLessonComplete || completeMutation.isSuccess
-                    ? "✓ Completed"
+                    ? "Completed"
                     : completeMutation.isPending
                       ? "Saving…"
                       : "Mark as complete"}

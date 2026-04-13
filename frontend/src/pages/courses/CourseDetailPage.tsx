@@ -12,6 +12,17 @@ import { Separator } from "@/components/ui/separator"
 
 import ReviewForm from "@/components/reviews/ReviewForm"
 import ReviewList from "@/components/reviews/ReviewList"
+import {
+  Check,
+  ChevronRight,
+  Clock,
+  FileText,
+  PackageOpen,
+  Star,
+  TriangleAlert,
+  User,
+} from "lucide-react"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function CourseDetailPage() {
   const { slug } = useParams<{ slug: string }>()
@@ -63,45 +74,22 @@ export default function CourseDetailPage() {
 
   if (isLoading)
     return (
-      <div
-        style={{
-          maxWidth: 900,
-          margin: "0 auto",
-          padding: "var(--space-12) var(--space-6)",
-        }}
-      >
-        <div
-          style={{
-            height: 32,
-            width: "60%",
-            borderRadius: "var(--radius-sm)",
-            background: "var(--color-surface-offset)",
-            marginBottom: "var(--space-4)",
-          }}
-          className="animate-pulse"
-        />
-        <div
-          style={{
-            height: 300,
-            borderRadius: "var(--radius-lg)",
-            background: "var(--color-surface-offset)",
-          }}
-          className="animate-pulse"
-        />
+      <div className="container mx-auto my-0 px-6 py-3">
+        <div className="mt-64 space-y-4">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Skeleton key={i} className="h-42" />
+          ))}
+        </div>
       </div>
     )
-
   if (isError || !course)
     return (
-      <div
-        style={{
-          textAlign: "center",
-          padding: "var(--space-16)",
-          color: "var(--color-text-muted)",
-        }}
-      >
-        <p style={{ fontSize: "2rem", marginBottom: "var(--space-4)" }}>😕</p>
-        <p>Course not found.</p>
+      <div className="mt-12 flex flex-col items-center gap-2">
+        <TriangleAlert
+          size="64"
+          className="fill-destructive/15 stroke-destructive"
+        />
+        <h3 className="text-xl text-destructive">Couse not found!</h3>
       </div>
     )
 
@@ -121,7 +109,8 @@ export default function CourseDetailPage() {
           disabled
           style={{ minWidth: 180, cursor: "default" }}
         >
-          ✓ Already enrolled
+          <Check />
+          Already enrolled
         </Button>
       )
     }
@@ -143,121 +132,73 @@ export default function CourseDetailPage() {
   }
 
   return (
-    <div
-      style={{
-        maxWidth: 900,
-        margin: "0 auto",
-        padding: "var(--space-12) var(--space-6)",
-      }}
-    >
+    <div className="container mx-auto my-0 px-6 py-3">
       {/* Header */}
-      <div style={{ marginBottom: "var(--space-8)" }}>
+      <div>
         {course.category && (
-          <Badge variant="secondary" style={{ marginBottom: "var(--space-3)" }}>
-            {course.category}
-          </Badge>
+          <Badge variant="secondary">{course.category}</Badge>
         )}
 
-        <h1
-          style={{
-            fontSize: "var(--text-xl)",
-            fontWeight: 700,
-            marginBottom: "var(--space-4)",
-            lineHeight: 1.2,
-          }}
-        >
-          {course.title}
-        </h1>
+        <h1 className="my-2 text-3xl font-bold">{course.title}</h1>
 
-        <p
-          style={{
-            color: "var(--color-text-muted)",
-            marginBottom: "var(--space-4)",
-          }}
-        >
+        <p className="max-w-[90ch] text-muted-foreground">
           {course.description}
         </p>
 
         {/* Meta row */}
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "var(--space-4)",
-            fontSize: "var(--text-sm)",
-            color: "var(--color-text-muted)",
-            marginBottom: "var(--space-6)",
-          }}
-        >
-          <span>👩‍🏫 {course.teacher_name}</span>
-          <span>📦 {totalModules} modules</span>
-          <span>🎬 {totalLessons} lessons</span>
-          {course.avg_rating && (
-            <span style={{ color: "#ca8a04", fontWeight: 600 }}>
-              ★ {course.avg_rating} ({course.total_reviews} reviews)
+        <div className="mt-4 flex items-end justify-between sm:items-center">
+          <div className="flex flex-col gap-2 text-sm leading-none text-muted-foreground sm:flex-row md:gap-4">
+            <span className="flex items-center gap-1">
+              <User size="18" />
+              <p>{course.teacher_name}</p>
             </span>
-          )}
+            <span className="flex items-center gap-1">
+              <FileText size="18" />
+              <p>{totalModules} modules</p>
+            </span>
+            <span className="flex items-center gap-1">
+              <FileText size="18" />
+              <p>{totalLessons} lessons</p>
+            </span>
+            {course.avg_rating && (
+              <span className="flex items-center gap-0.5 text-sm leading-none font-semibold text-yellow-400">
+                <Star className="size-4 fill-yellow-400 stroke-0" />{" "}
+                {course.avg_rating}
+                <span>({course.total_reviews})</span>
+              </span>
+            )}
+          </div>
+          {renderEnrollButton()}
         </div>
-
-        {renderEnrollButton()}
       </div>
-
-      <Separator style={{ marginBottom: "var(--space-8)" }} />
 
       {/* Curriculum */}
       <div>
-        <h2
-          style={{
-            fontSize: "var(--text-lg)",
-            fontWeight: 600,
-            marginBottom: "var(--space-6)",
-          }}
-        >
-          Course curriculum
-        </h2>
+        <h2 className="my-4 text-xl font-semibold">Course curriculum</h2>
 
         {course.modules?.length === 0 && (
-          <p style={{ color: "var(--color-text-muted)" }}>No content yet.</p>
+          <div className="flex flex-col items-center gap-2 rounded-lg border-2 border-dashed border-border p-4 text-muted-foreground">
+            <PackageOpen size="64" />
+            <p className="text-center">No content yet.</p>
+          </div>
         )}
 
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "var(--space-4)",
-          }}
-        >
+        <div className="mb-10 space-y-4">
+          {isLoading &&
+            Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="h-40" />
+            ))}
+
           {course.modules?.map((module) => (
             <div
               key={module.module_id}
-              style={{
-                border: "1px solid var(--color-border)",
-                borderRadius: "var(--radius-lg)",
-                overflow: "hidden",
-              }}
+              className="overflow-hidden rounded-lg border border-border"
             >
               {/* Module header */}
-              <div
-                style={{
-                  padding: "var(--space-4) var(--space-5)",
-                  background: "var(--color-surface)",
-                  borderBottom:
-                    module.lessons.length > 0
-                      ? "1px solid var(--color-border)"
-                      : "none",
-                }}
-              >
-                <h3 style={{ fontWeight: 600, fontSize: "var(--text-base)" }}>
-                  {module.title}
-                </h3>
+              <div className="space-y-2 border-t border-border bg-muted/50 px-4 py-3">
+                <h3 className="text-base font-semibold">{module.title}</h3>
                 {module.description && (
-                  <p
-                    style={{
-                      fontSize: "var(--text-sm)",
-                      color: "var(--color-text-muted)",
-                      marginTop: "var(--space-1)",
-                    }}
-                  >
+                  <p className="line-clamp-3 max-w-[90ch] text-sm text-muted-foreground">
                     {module.description}
                   </p>
                 )}
@@ -265,26 +206,19 @@ export default function CourseDetailPage() {
 
               {/* Lessons list */}
               {module.lessons.map((lesson, idx) => (
-                <div
-                  key={lesson.lesson_id}
-                  style={{
-                    padding: "var(--space-3) var(--space-5)",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "var(--space-3)",
-                    borderBottom:
-                      idx < module.lessons.length - 1
-                        ? "1px solid var(--color-border)"
-                        : "none",
-                    background: "var(--color-surface-2)",
-                    fontSize: "var(--text-sm)",
-                  }}
-                >
-                  <span style={{ color: "var(--color-text-faint)" }}>▶</span>
-                  <span style={{ flex: 1 }}>{lesson.title}</span>
+                <div className="flex items-center gap-2 border-t border-border px-4 py-2">
+                  <span>
+                    <ChevronRight size="16" />
+                  </span>
+                  <span className="flex-1">
+                    <span className="font-semibold">{idx + 1}</span>
+                    {". "}
+                    {lesson.title}
+                  </span>
                   {lesson.duration_mins && (
-                    <span style={{ color: "var(--color-text-muted)" }}>
-                      {lesson.duration_mins} min
+                    <span className="flex items-center gap-1 text-sm text-muted-foreground">
+                      <Clock size="16" />
+                      <p>{lesson.duration_mins} min</p>
                     </span>
                   )}
                 </div>
