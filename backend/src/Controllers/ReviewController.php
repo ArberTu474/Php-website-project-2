@@ -9,7 +9,7 @@ use Core\Request;
 class ReviewController
 {
   // POST /enrollments/:id/review
-  public function create(Request $req): void
+  public function store(Request $req): void
   {
     $enrollmentId = $req->params['id'];
     $studentId = $req->user['user_id'];
@@ -20,10 +20,7 @@ class ReviewController
       Response::error('Enrollment not found.', 404);
     }
 
-    // Must have completed at least 1 lesson
-    if ($enrollment['progress_percent'] < 1) {
-      Response::error('Complete at least one lesson before leaving a review.', 403);
-    }
+    // ❌ Removed progress check — unreliable field value
 
     $body = $req->body;
     $rating = (int) ($body['rating'] ?? 0);

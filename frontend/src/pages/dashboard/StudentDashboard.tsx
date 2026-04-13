@@ -43,9 +43,6 @@ export default function StudentDashboard() {
             <h3 className="text-xl">No courses yet</h3>
             <p>Enroll in a course to start learning.</p>
           </div>
-          <Button className="cursor-pointer" asChild size={"lg"}>
-            <Link to="/">Browse courses</Link>
-          </Button>
         </div>
       )}
 

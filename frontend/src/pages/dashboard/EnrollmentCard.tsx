@@ -22,7 +22,6 @@ export default function EnrollmentCard({
   isComplete,
   progress,
 }: EnrollmentCardProps) {
-  console.log(progress.percent === 100 ? "bg-green-600" : "")
   return (
     <Card key={enrollment.enrollment_id} className="gap-0 p-4">
       <CardContent className="p-0">

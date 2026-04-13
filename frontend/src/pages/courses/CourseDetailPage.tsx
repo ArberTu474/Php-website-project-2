@@ -19,6 +19,8 @@ import {
   User,
 } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
+import ReviewForm from "@/components/reviews/ReviewForm"
+import ReviewList from "@/components/reviews/ReviewList"
 
 export default function CourseDetailPage() {
   const { slug } = useParams<{ slug: string }>()
@@ -47,6 +49,18 @@ export default function CourseDetailPage() {
   const isEnrolled =
     myEnrollments?.some((e) => e.course.course_id === course?.course_id) ??
     false
+
+  // The enrollment object for this course
+  const enrollment = myEnrollments?.find(
+    (e) => e.course.course_id === course?.course_id
+  )
+
+  // Existing review if the student already submitted one
+  const existingReview = course?.reviews?.find(
+    (r) => r.student_id === user?.user_id
+  )
+
+  const canReview = isAuthenticated && user?.role === "student" && isEnrolled
 
   const enrollMutation = useMutation({
     mutationFn: () => enrollmentsApi.enroll(course!.course_id),
@@ -78,6 +92,7 @@ export default function CourseDetailPage() {
         </div>
       </div>
     )
+
   if (isError || !course)
     return (
       <div className="mt-12 flex flex-col items-center gap-2">
@@ -85,7 +100,7 @@ export default function CourseDetailPage() {
           size="64"
           className="fill-destructive/15 stroke-destructive"
         />
-        <h3 className="text-xl text-destructive">Couse not found!</h3>
+        <h3 className="text-xl text-destructive">Course not found!</h3>
       </div>
     )
 
@@ -93,7 +108,6 @@ export default function CourseDetailPage() {
     course.modules?.reduce((acc, m) => acc + m.lessons.length, 0) ?? 0
   const totalModules = course.modules?.length ?? 0
 
-  // Determine button label + state
   function renderEnrollButton() {
     if (user?.role === "teacher") return null
 
@@ -129,7 +143,7 @@ export default function CourseDetailPage() {
 
   return (
     <div className="container mx-auto my-0 px-6 py-3">
-      {/* Header */}
+      {/* ── Header ─────────────────────────────────────────────────────── */}
       <div>
         {course.category && (
           <Badge variant="secondary">{course.category}</Badge>
@@ -157,8 +171,8 @@ export default function CourseDetailPage() {
               <p>{totalLessons} lessons</p>
             </span>
             {course.avg_rating && (
-              <span className="flex items-center gap-0.5 text-sm leading-none font-semibold text-yellow-400">
-                <Star className="size-4 fill-yellow-400 stroke-0" />{" "}
+              <span className="flex items-center gap-0.5 text-sm leading-none font-semibold text-yellow-400/80">
+                <Star className="fill-yellow-40/80 size-4 stroke-0" />{" "}
                 {course.avg_rating}
                 <span>({course.total_reviews})</span>
               </span>
@@ -168,7 +182,7 @@ export default function CourseDetailPage() {
         </div>
       </div>
 
-      {/* Curriculum */}
+      {/* ── Curriculum ─────────────────────────────────────────────────── */}
       <div>
         <h2 className="my-4 text-xl font-semibold">Course curriculum</h2>
 
@@ -225,6 +239,39 @@ export default function CourseDetailPage() {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* ── Reviews ────────────────────────────────────────────────────── */}
+      <div className="mb-10">
+        <div className="mb-4 flex items-center gap-3">
+          <h2 className="text-xl font-semibold">Student reviews</h2>
+          {course.avg_rating && (
+            <span className="flex items-center gap-1 text-base font-semibold text-yellow-400/80">
+              <Star className="size-6 fill-yellow-400/80 stroke-0" />
+              {course.avg_rating}
+              <span className="font-normal">
+                <p>({course.total_reviews})</p>
+              </span>
+            </span>
+          )}
+        </div>
+
+        {/* Write / edit review — enrolled students only */}
+        {canReview && enrollment && (
+          <div className="mb-8 rounded-lg border border-border p-5">
+            <h3 className="mb-4 text-base font-semibold">
+              {existingReview ? "Edit your review" : "Leave a review"}
+            </h3>
+            <ReviewForm
+              enrollmentId={enrollment.enrollment_id}
+              courseSlug={slug!}
+              existingRating={existingReview?.rating}
+              existingComment={existingReview?.comment ?? undefined}
+            />
+          </div>
+        )}
+
+        <ReviewList reviews={course.reviews ?? []} />
       </div>
     </div>
   )

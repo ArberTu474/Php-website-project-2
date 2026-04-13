@@ -51,8 +51,8 @@ export default function CourseCard({ course }: Props) {
               {course.total_lessons} lessons
             </span>
             {course.avg_rating && (
-              <span className="flex items-center gap-0.5 text-sm leading-none font-semibold text-yellow-400">
-                <Star className="size-4 fill-yellow-400 stroke-0" />{" "}
+              <span className="flex items-center gap-0.5 text-sm leading-none font-semibold text-yellow-400/80">
+                <Star className="size-4 fill-yellow-400/80 stroke-0" />{" "}
                 {course.avg_rating}
                 <span>({course.total_reviews})</span>
               </span>

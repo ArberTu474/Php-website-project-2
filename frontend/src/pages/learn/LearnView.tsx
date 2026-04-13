@@ -144,7 +144,11 @@ export default function LearnView() {
             <div className="px-4">
               <Progress
                 value={enrollment.progress.percent}
-                className="mb-1 h-1.5"
+                className={`mb-1 h-1.5 ${
+                  enrollment.progress.percent === 100
+                    ? "[&>div]:bg-green-600/60"
+                    : ""
+                }`}
               />
               <p className="text-xs font-semibold">
                 {enrollment.progress.completed_lessons}/

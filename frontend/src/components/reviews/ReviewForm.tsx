@@ -5,6 +5,7 @@ import { enrollmentsApi } from "@/lib/enrollments"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
+import { Star } from "lucide-react"
 
 interface Props {
   enrollmentId: string
@@ -16,6 +17,7 @@ interface Props {
 
 export default function ReviewForm({
   enrollmentId,
+  courseSlug,
   existingRating = 0,
   existingComment = "",
   onSuccess,
@@ -31,6 +33,7 @@ export default function ReviewForm({
       toast.success("Review submitted — thank you!")
       queryClient.invalidateQueries({ queryKey: ["enrollments"] })
       queryClient.invalidateQueries({ queryKey: ["courses"] })
+      queryClient.invalidateQueries({ queryKey: ["course", courseSlug] })
       onSuccess?.()
     },
     onError: (err: Error) => toast.error(err.message),
@@ -39,78 +42,56 @@ export default function ReviewForm({
   const display = hovered || rating
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "var(--space-5)",
-      }}
-    >
+    <div className="flex flex-col gap-4">
       {/* Star rating */}
-      <div>
-        <Label style={{ display: "block", marginBottom: "var(--space-3)" }}>
-          Your rating
-        </Label>
-        <div style={{ display: "flex", gap: "var(--space-2)" }}>
-          {[1, 2, 3, 4, 5].map((star) => (
-            <button
-              key={star}
-              type="button"
-              onClick={() => setRating(star)}
-              onMouseEnter={() => setHovered(star)}
-              onMouseLeave={() => setHovered(0)}
-              aria-label={`Rate ${star} out of 5`}
-              style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                fontSize: "2rem",
-                lineHeight: 1,
-                padding: "var(--space-1)",
-                color: star <= display ? "#ca8a04" : "var(--color-border)",
-                transition:
-                  "color var(--transition-interactive), transform 120ms ease",
-                transform: star <= display ? "scale(1.15)" : "scale(1)",
-              }}
-            >
-              ★
-            </button>
-          ))}
+      <div className="space-y-1">
+        <Label className="font-semibold">Your rating</Label>
+
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <button
+                key={star}
+                type="button"
+                onClick={() => setRating(star)}
+                onMouseEnter={() => setHovered(star)}
+                onMouseLeave={() => setHovered(0)}
+                aria-label={`Rate ${star} out of 5`}
+                className={`cursor-pointer border-0 bg-transparent leading-none transition-all duration-150 ${
+                  star <= display
+                    ? "fill-yellow-400 text-yellow-400"
+                    : "fill-none text-border"
+                } `}
+              >
+                <Star />
+              </button>
+            ))}
+          </div>
+          {rating > 0 && (
+            <p className="text-base leading-none font-semibold text-yellow-400/80">
+              {["", "Poor", "Fair", "Good", "Great", "Excellent!"][rating]}
+            </p>
+          )}
         </div>
-        {rating > 0 && (
-          <p
-            style={{
-              fontSize: "var(--text-xs)",
-              color: "var(--color-text-muted)",
-              marginTop: "var(--space-2)",
-            }}
-          >
-            {["", "Poor", "Fair", "Good", "Great", "Excellent!"][rating]}
-          </p>
-        )}
       </div>
 
       {/* Comment */}
-      <div>
-        <Label
-          htmlFor="review-comment"
-          style={{ display: "block", marginBottom: "var(--space-2)" }}
-        >
-          Comment{" "}
-          <span style={{ color: "var(--color-text-faint)", fontWeight: 400 }}>
-            (optional)
-          </span>
+      <div className="space-y-1">
+        <Label htmlFor="review-comment" className="font-semibold">
+          Comment (optional)
         </Label>
         <Textarea
+          className="min-h-30"
           id="review-comment"
           placeholder="What did you think of the course?"
           value={comment}
           onChange={(e) => setComment(e.target.value)}
-          rows={4}
+          rows={20}
         />
       </div>
 
       <Button
+        size={"lg"}
         onClick={() => mutation.mutate()}
         disabled={rating === 0 || mutation.isPending}
       >

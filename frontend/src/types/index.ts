@@ -37,6 +37,17 @@ export interface Module {
   lessons: Lesson[]
 }
 
+export interface Review {
+  review_id: string
+  student_id: string
+  enrollment_id: string
+  rating: number
+  comment: string | null
+  student_name: string
+  created_at: string
+  updated_at: string
+}
+
 export interface Course {
   course_id: string
   teacher_id?: string
@@ -53,6 +64,7 @@ export interface Course {
   total_reviews: number
   created_at: string
   modules?: Module[]
+  reviews?: Review[]
 }
 
 export interface EnrollmentProgress {
@@ -74,16 +86,6 @@ export interface Enrollment {
     teacher_name: string
   }
   progress: EnrollmentProgress
-}
-
-export interface Review {
-  review_id: string
-  enrollment_id: string
-  rating: number
-  comment: string | null
-  student_name: string
-  created_at: string
-  updated_at: string
 }
 
 // API response wrappers

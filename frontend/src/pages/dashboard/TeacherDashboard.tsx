@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label"
 import { FilePen, Plus } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
 import TeacherCourseCard from "@/components/courses/TeacherCourseCard"
+import { Textarea } from "@/components/ui/textarea"
 
 export default function TeacherDashboard() {
   const { user } = useAuthStore()
@@ -87,13 +88,6 @@ export default function TeacherDashboard() {
             <h3 className="text-xl">No courses yet</h3>
             <p>Create your first course to start teaching.</p>
           </div>
-          <Button
-            className="cursor-pointer"
-            size={"lg"}
-            onClick={() => setShowCreate(true)}
-          >
-            Create a course
-          </Button>
         </div>
       )}
 
@@ -118,7 +112,7 @@ export default function TeacherDashboard() {
 
       {/* Create course dialog */}
       <Dialog open={showCreate} onOpenChange={setShowCreate}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-175">
           <DialogHeader>
             <DialogTitle className="text-base font-bold">
               Create a new course
@@ -144,10 +138,11 @@ export default function TeacherDashboard() {
               <Label htmlFor="desc" className="font-semibold">
                 Description
               </Label>
-              <Input
+              <Textarea
                 id="desc"
                 placeholder="Short description of the course"
                 value={newDesc}
+                className="min-h-60 resize-none overflow-y-scroll"
                 onChange={(e) => setNewDesc(e.target.value)}
               />
             </div>
