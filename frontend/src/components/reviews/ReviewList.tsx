@@ -35,7 +35,7 @@ export default function ReviewList({ reviews }: Props) {
     )
 
   return (
-    <div className="flex gap-4">
+    <div className="gird-cols-1 grid gap-4 lg:grid-cols-2">
       {reviews.map((review) => (
         <div
           key={review.review_id}
