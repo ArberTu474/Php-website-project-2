@@ -1,0 +1,45 @@
+@layer components {
+  .navbar {
+    @apply sticky top-0 z-50 border-b border-border bg-background;
+  }
+
+  .navbar-inner {
+    @apply container mx-auto my-0 flex items-center justify-between px-6 py-3;
+  }
+
+  .navbar-brand {
+    @apply text-2xl font-extrabold text-primary no-underline;
+  }
+
+  .navbar-nav {
+    @apply flex items-center justify-between gap-2;
+  }
+
+  .navbar-link-btn {
+    @apply text-lg no-underline;
+  }
+
+  .navbar-avatar-trigger {
+    @apply cursor-pointer rounded-full border-0 bg-transparent;
+  }
+
+  .navbar-user-summary {
+    @apply p-2;
+  }
+
+  .navbar-user-name {
+    @apply mb-3 text-lg font-bold;
+  }
+
+  .navbar-user-role {
+    @apply flex items-center gap-1 text-sm text-muted-foreground;
+  }
+
+  .navbar-menu-link {
+    @apply cursor-pointer text-sm;
+  }
+
+  .navbar-menu-link-row {
+    @apply flex items-center gap-1;
+  }
+}

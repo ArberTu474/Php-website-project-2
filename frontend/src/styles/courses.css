@@ -1,0 +1,121 @@
+@layer components {
+  .courses-grid {
+    @apply grid w-full grid-cols-1 items-stretch gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4;
+  }
+
+  .course-card-link {
+    @apply no-underline;
+  }
+
+  .course-card {
+    @apply flex h-full cursor-pointer flex-col gap-0 overflow-hidden bg-card p-0 shadow-sm transition-shadow hover:shadow-md;
+  }
+
+  .course-card-thumb {
+    @apply relative aspect-video overflow-hidden bg-secondary;
+  }
+
+  .course-card-thumb-image {
+    @apply h-full w-full object-cover;
+  }
+
+  .course-card-thumb-fallback {
+    @apply flex h-full w-full items-center justify-center;
+  }
+
+  .course-card-body {
+    @apply p-4;
+  }
+
+  .course-card-category {
+    @apply my-2;
+  }
+
+  .course-card-title {
+    @apply line-clamp-3 overflow-hidden text-lg font-semibold text-card-foreground;
+  }
+
+  .course-card-teacher {
+    @apply text-muted-foreground;
+  }
+
+  .course-card-stats {
+    @apply flex items-center gap-2;
+  }
+
+  .course-card-stat {
+    @apply flex items-center gap-0.5 text-sm leading-none font-semibold text-muted-foreground;
+  }
+
+  .course-card-rating {
+    @apply flex items-center gap-0.5 text-sm leading-none font-semibold text-yellow-400/80;
+  }
+
+  .course-detail-hero {
+    @apply my-2 text-3xl font-bold;
+  }
+
+  .course-detail-meta-row {
+    @apply mt-4 flex items-end justify-between max-md:flex-col max-md:items-start;
+  }
+
+  .course-detail-meta-list {
+    @apply flex flex-col gap-2 text-sm leading-none text-muted-foreground sm:flex-row md:gap-4;
+  }
+
+  .course-detail-meta-item {
+    @apply flex items-center gap-1;
+  }
+
+  .course-curriculum-wrap {
+    @apply mb-10 space-y-4;
+  }
+
+  .course-module-card {
+    @apply overflow-hidden rounded-lg border border-border;
+  }
+
+  .course-module-header {
+    @apply space-y-2 border-t border-border bg-muted/50 px-4 py-3;
+  }
+
+  .course-module-title {
+    @apply text-base font-semibold;
+  }
+
+  .course-module-description {
+    @apply line-clamp-3 max-w-[90ch] text-sm text-muted-foreground;
+  }
+
+  .course-lesson-row {
+    @apply flex items-center gap-2 border-t border-border px-4 py-2;
+  }
+
+  .course-lesson-name {
+    @apply flex-1;
+  }
+
+  .course-lesson-index {
+    @apply font-semibold;
+  }
+
+  .course-lesson-duration {
+    @apply flex items-center gap-1 text-sm text-muted-foreground;
+  }
+
+  .course-reviews-header {
+    @apply mb-4 flex items-center gap-3;
+  }
+
+  .course-review-box {
+    @apply mb-8 rounded-lg border border-border p-5;
+  }
+
+  .course-review-title {
+    @apply mb-4 text-base font-semibold;
+  }
+
+  .course-enroll-button-fixed {
+    @apply min-w-[180px];
+  }
+}

@@ -1,0 +1,225 @@
+### Learnify API — REST Client
+### Install "REST Client" extension by Huachao Mao in VS Code
+### Set these variables to real values as you get them from responses
+
+@baseUrl = http://localhost:8000
+@teacherToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYTUwZTg1OTMtNTlhNC00YTA0LTkzNjYtNjYxNjQ1MDNiZjYxIiwicm9sZSI6InRlYWNoZXIiLCJpYXQiOjE3NzU5MTk0NjQsImV4cCI6MTc3NjAwNTg2NH0.fVDcOoEqQ0ny_NAuKGGIQEBu2oUiyeU12JooV-94_l4
+@studentToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZDA5ZTY1YzgtM2Y5Zi00ZWMyLTk4NDgtZWUzNDIwYzllODE0Iiwicm9sZSI6InN0dWRlbnQiLCJpYXQiOjE3NzU5MjM4MzUsImV4cCI6MTc3NjAxMDIzNX0._QL1K3UDeBiwAOvMnk948nqAxcetWhQl7jSEzo144C8
+@courseId = 233b7406-6755-43cd-a4c6-75c95261eea3
+@moduleId = 45feaeeb-9211-4b08-a08a-1175a59a48dd
+@lessonId = 7bf69dda-50bb-47fe-89a9-dd4cf344e4a6
+@enrollmentId = 673fc7fe-c544-4975-aa6f-7d3bd963e827
+
+
+### ─────────────────────────────────────────────────────────────
+### HEALTH
+### ─────────────────────────────────────────────────────────────
+
+### Health Check
+GET {{baseUrl}}/health
+
+
+### ─────────────────────────────────────────────────────────────
+### AUTH
+### ─────────────────────────────────────────────────────────────
+
+### Register Teacher
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "ana@test.com",
+  "password": "secret123",
+  "first_name": "Ana",
+  "last_name": "Koci",
+  "role": "teacher"
+}
+
+###
+
+### Register Student
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "student@test.com",
+  "password": "secret123",
+  "first_name": "Besa",
+  "last_name": "Hoxha",
+  "role": "student"
+}
+
+###
+
+### Login Teacher
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "ana@test.com",
+  "password": "secret123"
+}
+
+###
+
+### Login Student
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "student@test.com",
+  "password": "secret123"
+}
+
+###
+
+### Get Current User (me)
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{teacherToken}}
+
+
+### ─────────────────────────────────────────────────────────────
+### COURSES
+### ─────────────────────────────────────────────────────────────
+
+### List All Published Courses (public)
+GET {{baseUrl}}/courses
+
+###
+
+### Get Single Course by ID (public)
+GET {{baseUrl}}/courses/{{courseId}}
+
+###
+
+### Create Course (teacher)
+POST {{baseUrl}}/courses
+Content-Type: application/json
+Authorization: Bearer {{teacherToken}}
+
+{
+  "title": "Intro to PHP",
+  "description": "Learn PHP from scratch",
+  "is_published": true
+}
+
+###
+
+### Update Course (teacher owner)
+PUT {{baseUrl}}/courses/{{courseId}}
+Content-Type: application/json
+Authorization: Bearer {{teacherToken}}
+
+{
+  "title": "Intro to PHP — Updated",
+  "description": "Updated description",
+  "is_published": true
+}
+
+###
+
+### Delete Course (teacher owner)
+DELETE {{baseUrl}}/courses/{{courseId}}
+Authorization: Bearer {{teacherToken}}
+
+
+### ─────────────────────────────────────────────────────────────
+### MODULES
+### ─────────────────────────────────────────────────────────────
+
+### Add Module to Course (teacher owner)
+POST {{baseUrl}}/courses/{{courseId}}/modules
+Content-Type: application/json
+Authorization: Bearer {{teacherToken}}
+
+{
+  "title": "Getting Started",
+  "description": "Setup and basics"
+}
+
+###
+
+### Update Module (teacher owner)
+PUT {{baseUrl}}/modules/{{moduleId}}
+Content-Type: application/json
+Authorization: Bearer {{teacherToken}}
+
+{
+  "title": "Getting Started — Updated",
+  "description": "Updated description"
+}
+
+###
+
+### Delete Module (teacher owner)
+DELETE {{baseUrl}}/modules/{{moduleId}}
+Authorization: Bearer {{teacherToken}}
+
+
+### ─────────────────────────────────────────────────────────────
+### LESSONS
+### ─────────────────────────────────────────────────────────────
+
+### Add Lesson to Module (teacher owner)
+POST {{baseUrl}}/modules/{{moduleId}}/lessons
+Content-Type: application/json
+Authorization: Bearer {{teacherToken}}
+
+{
+  "title": "What is PHP?",
+  "content": "## Introduction\n\nPHP is a server-side scripting language.",
+  "duration_mins": 10
+}
+
+###
+
+### Update Lesson (teacher owner)
+PUT {{baseUrl}}/lessons/{{lessonId}}
+Content-Type: application/json
+Authorization: Bearer {{teacherToken}}
+
+{
+  "title": "What is PHP? — Updated",
+  "content": "## Introduction\n\nUpdated content here.",
+  "duration_mins": 12
+}
+
+### Get single lesson (student, enrolled)
+GET {{baseUrl}}/lessons/{{lessonId}}
+Authorization: Bearer {{studentToken}}
+
+
+### ─────────────────────────────────────────────────────────────
+### ENROLLMENTS & PROGRESS
+### ─────────────────────────────────────────────────────────────
+
+### Enroll in Course (student)
+POST {{baseUrl}}/courses/{{courseId}}/enroll
+Authorization: Bearer {{studentToken}}
+
+###
+
+### Mark Lesson Complete (student)
+POST {{baseUrl}}/lessons/{{lessonId}}/complete
+Authorization: Bearer {{studentToken}}
+
+###
+
+### Get My Enrollments + Progress (student)
+GET {{baseUrl}}/enrollments/me
+Authorization: Bearer {{studentToken}}
+
+
+### ─────────────────────────────────────────────────────────────
+### REVIEWS
+### ─────────────────────────────────────────────────────────────
+
+### Leave a Review (student — needs 80% completion)
+POST {{baseUrl}}/enrollments/{{enrollmentId}}/review
+Content-Type: application/json
+Authorization: Bearer {{studentToken}}
+
+{
+  "rating": 5,
+  "comment": "Great course!"
+}

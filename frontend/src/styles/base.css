@@ -1,0 +1,87 @@
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply font-sans antialiased;
+  }
+
+  body {
+    @apply bg-background text-foreground min-h-screen;
+  }
+
+  a {
+    @apply transition-colors;
+  }
+}
+
+@layer components {
+  .app-shell {
+    @apply flex min-h-dvh flex-col;
+  }
+
+  .app-main {
+    @apply flex-1;
+  }
+
+  .page-container {
+    @apply container mx-auto px-6 py-3;
+  }
+
+  .page-section {
+    @apply my-6;
+  }
+
+  .page-header {
+    @apply flex flex-wrap items-end justify-between gap-2 py-6;
+  }
+
+  .page-heading {
+    @apply text-3xl font-bold;
+  }
+
+  .page-subheading {
+    @apply text-base text-muted-foreground;
+  }
+
+  .section-heading {
+    @apply text-xl font-semibold;
+  }
+
+  .state-box {
+    @apply mt-12 flex flex-col items-center gap-2 text-muted-foreground;
+  }
+
+  .state-box-danger {
+    @apply mt-12 flex flex-col items-center gap-2 text-destructive;
+  }
+
+  .state-card-dashed {
+    @apply flex flex-col items-center gap-2 rounded-lg border-2 border-dashed border-border p-4 text-muted-foreground;
+  }
+
+  .content-card {
+    @apply rounded-lg border border-border bg-card;
+  }
+
+  .top-divider {
+    @apply border-t border-border;
+  }
+
+  .spinner-lg {
+    @apply mx-auto my-0 size-16 animate-spin rounded-full border-6 border-border border-t-transparent;
+  }
+
+  .icon-muted {
+    @apply stroke-muted-foreground;
+  }
+
+  .icon-danger-soft {
+    @apply fill-destructive/15 stroke-destructive;
+  }
+
+  .text-prose-muted {
+    @apply max-w-[90ch] text-muted-foreground;
+  }
+}

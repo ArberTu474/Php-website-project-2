@@ -1,0 +1,141 @@
+@layer components {
+  .learn-shell {
+    @apply flex h-[calc(100dvh-65px)] overflow-hidden;
+  }
+
+  .learn-sidebar {
+    @apply flex flex-col overflow-hidden border-r border-border bg-background transition-all duration-200 ease-in-out;
+  }
+
+  .learn-sidebar-open {
+    @apply w-[18.75rem] min-w-[18.75rem];
+  }
+
+  .learn-sidebar-closed {
+    @apply w-0 min-w-0;
+  }
+
+  .learn-sidebar-header {
+    @apply pt-2 pb-4;
+  }
+
+  .learn-back-link-wrap {
+    @apply px-4 pb-2;
+  }
+
+  .learn-course-title {
+    @apply px-4 pt-4 pb-2 text-lg leading-snug font-bold;
+  }
+
+  .learn-progress-wrap {
+    @apply px-4;
+  }
+
+  .learn-curriculum {
+    @apply flex-1 overflow-auto;
+  }
+
+  .learn-module-title {
+    @apply border-b border-border bg-muted p-4 py-1 text-sm font-semibold uppercase;
+  }
+
+  .learn-lesson-button {
+    @apply flex w-full cursor-pointer items-start gap-1 border-b border-border px-4 py-2 text-left;
+  }
+
+  .learn-lesson-button-active {
+    @apply bg-muted;
+  }
+
+  .learn-lesson-button-idle {
+    @apply bg-transparent;
+  }
+
+  .learn-lesson-icon {
+    @apply mt-0.5 text-center text-xs;
+  }
+
+  .learn-lesson-icon-done {
+    @apply text-green-600;
+  }
+
+  .learn-lesson-icon-active {
+    @apply text-primary;
+  }
+
+  .learn-lesson-icon-idle {
+    @apply text-muted-foreground;
+  }
+
+  .learn-lesson-text-wrap {
+    @apply min-w-0 flex-1;
+  }
+
+  .learn-lesson-title {
+    @apply text-sm leading-[1.4];
+  }
+
+  .learn-lesson-title-active {
+    @apply font-semibold text-primary;
+  }
+
+  .learn-lesson-title-idle {
+    @apply font-normal text-foreground;
+  }
+
+  .learn-lesson-title-done {
+    @apply italic text-muted-foreground decoration-muted-foreground;
+  }
+
+  .learn-lesson-duration {
+    @apply text-xs text-muted-foreground;
+  }
+
+  .learn-main {
+    @apply flex flex-1 flex-col overflow-auto;
+  }
+
+  .learn-topbar {
+    @apply flex shrink-0 items-center gap-4 p-4;
+  }
+
+  .learn-content {
+    @apply mx-auto my-0 w-full max-w-[63.75rem] p-4;
+  }
+
+  .learn-loading-wrap {
+    @apply my-10;
+  }
+
+  .learn-lesson-header {
+    @apply flex items-center gap-2;
+  }
+
+  .learn-lesson-page-title {
+    @apply text-xl font-bold;
+  }
+
+  .learn-video-wrap {
+    @apply relative my-4 aspect-video overflow-hidden rounded-lg;
+  }
+
+  .learn-video-iframe {
+    @apply absolute inset-0 h-full w-full border-0;
+  }
+
+  .learn-markdown-wrap {
+    @apply text-base text-foreground;
+  }
+
+  .learn-actions {
+    @apply mt-4 flex items-center justify-between gap-4 border-t border-border py-4;
+  }
+
+  .learn-prev-next {
+    @apply flex items-center gap-2;
+  }
+
+  .learn-empty-lesson {
+    @apply flex flex-col items-center gap-2 text-muted-foreground;
+  }
+}

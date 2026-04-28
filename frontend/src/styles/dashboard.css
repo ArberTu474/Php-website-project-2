@@ -1,0 +1,153 @@
+@layer components {
+  .dashboard-grid {
+    @apply grid grid-cols-1 gap-4 xl:grid-cols-2;
+  }
+
+  .dashboard-card {
+    @apply rounded-lg border border-border bg-card p-4;
+  }
+
+  .teacher-course-card {
+    @apply p-4;
+  }
+
+  .teacher-course-content {
+    @apply flex h-full flex-col justify-between p-0;
+  }
+
+  .teacher-course-main {
+    @apply mb-4 flex h-full flex-col gap-1;
+  }
+
+  .teacher-course-top {
+    @apply flex flex-wrap items-start justify-between gap-1;
+  }
+
+  .teacher-course-title {
+    @apply line-clamp-2 overflow-hidden text-lg font-semibold text-card-foreground;
+  }
+
+  .teacher-course-description {
+    @apply line-clamp-2 max-w-prose text-muted-foreground;
+  }
+
+  .teacher-course-meta {
+    @apply flex items-end justify-between max-sm:flex-col max-sm:items-start;
+  }
+
+  .teacher-course-meta-list {
+    @apply flex flex-col gap-2 text-sm leading-none text-muted-foreground sm:flex-row md:gap-4;
+  }
+
+  .teacher-course-meta-item {
+    @apply flex items-center gap-1;
+  }
+
+  .teacher-course-actions {
+    @apply flex items-center gap-2;
+  }
+
+  .enrollment-card {
+    @apply gap-0 p-4;
+  }
+
+  .enrollment-card-content {
+    @apply p-0;
+  }
+
+  .enrollment-course-top {
+    @apply mb-4;
+  }
+
+  .enrollment-course-row {
+    @apply flex flex-wrap items-center gap-2;
+  }
+
+  .enrollment-course-title {
+    @apply line-clamp-3 overflow-hidden text-lg leading-snug font-semibold text-card-foreground;
+  }
+
+  .enrollment-progress-wrap {
+    @apply my-4;
+  }
+
+  .enrollment-progress-meta {
+    @apply text-sm font-semibold;
+  }
+
+  .enrollment-actions {
+    @apply flex justify-end gap-2;
+  }
+
+  .editor-header {
+    @apply mt-6 space-y-2;
+  }
+
+  .editor-header-top {
+    @apply flex items-center gap-2;
+  }
+
+  .editor-actions {
+    @apply flex w-full justify-end gap-2;
+  }
+
+  .editor-section-bar {
+    @apply my-6 flex items-center justify-between;
+  }
+
+  .editor-module-list {
+    @apply mb-10 space-y-4;
+  }
+
+  .editor-module-card {
+    @apply overflow-hidden rounded-lg border border-border;
+  }
+
+  .editor-module-header {
+    @apply flex items-start justify-between gap-2 border-t border-border bg-muted/50 px-4 py-3;
+  }
+
+  .editor-module-title {
+    @apply text-base font-semibold;
+  }
+
+  .editor-module-description {
+    @apply line-clamp-2 max-w-prose text-sm text-muted-foreground;
+  }
+
+  .editor-module-actions {
+    @apply flex items-center gap-2;
+  }
+
+  .editor-lesson-row {
+    @apply flex items-center gap-2 border-t border-border px-4 py-2;
+  }
+
+  .editor-lesson-title {
+    @apply flex-1 text-sm;
+  }
+
+  .editor-lesson-duration {
+    @apply flex items-center gap-1 text-sm text-muted-foreground;
+  }
+
+  .editor-add-lesson-row {
+    @apply flex w-full cursor-pointer items-center justify-center gap-2 border-t border-dashed border-border px-4 py-2 hover:bg-muted/50;
+  }
+
+  .editor-dialog-stack {
+    @apply space-y-4;
+  }
+
+  .editor-field-stack {
+    @apply space-y-1;
+  }
+
+  .editor-textarea-lg {
+    @apply min-h-60 resize-none overflow-y-scroll;
+  }
+
+  .permission-state {
+    @apply p-16 text-center text-muted-foreground;
+  }
+}

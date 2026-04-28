@@ -1,0 +1,90 @@
+@layer components {
+  .markdown-body {
+    @apply rounded-lg border border-border bg-card p-5 text-base leading-7 text-foreground shadow-sm;
+  }
+
+  .markdown-body > :first-child {
+    @apply mt-0;
+  }
+
+  .markdown-body > :last-child {
+    @apply mb-0;
+  }
+
+  .markdown-body h1 {
+    @apply mt-6 mb-3 text-3xl font-bold;
+  }
+
+  .markdown-body h2 {
+    @apply mt-6 mb-3 text-2xl font-semibold;
+  }
+
+  .markdown-body h3 {
+    @apply mt-5 mb-2 text-xl font-semibold;
+  }
+
+  .markdown-body h4 {
+    @apply mt-4 mb-2 text-lg font-semibold;
+  }
+
+  .markdown-body p {
+    @apply my-3 text-base leading-7 text-foreground;
+  }
+
+  .markdown-body ul {
+    @apply my-4 list-disc space-y-2 pl-6;
+  }
+
+  .markdown-body ol {
+    @apply my-4 list-decimal space-y-2 pl-6;
+  }
+
+  .markdown-body li {
+    @apply text-foreground;
+  }
+
+  .markdown-body a {
+    @apply text-primary underline underline-offset-2 hover:opacity-80;
+  }
+
+  .markdown-body strong {
+    @apply font-semibold;
+  }
+
+  .markdown-body blockquote {
+    @apply my-4 border-l-4 border-border bg-muted/50 px-4 py-3 italic text-muted-foreground;
+  }
+
+  .markdown-body hr {
+    @apply my-6 border-border;
+  }
+
+  .markdown-body code {
+    @apply rounded bg-muted px-1.5 py-0.5 font-mono text-sm;
+  }
+
+  .markdown-body pre {
+    @apply my-4 overflow-x-auto rounded-lg bg-foreground p-4 text-background;
+  }
+
+  .markdown-body pre code {
+    @apply bg-transparent p-0 text-inherit;
+  }
+
+  .markdown-body table {
+    @apply my-4 w-full border-collapse overflow-hidden rounded-lg;
+  }
+
+  .markdown-body thead {
+    @apply bg-muted;
+  }
+
+  .markdown-body th,
+  .markdown-body td {
+    @apply border border-border px-3 py-2 text-left align-top;
+  }
+
+  .markdown-body img {
+    @apply my-4 rounded-lg;
+  }
+}
